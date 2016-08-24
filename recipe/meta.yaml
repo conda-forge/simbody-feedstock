@@ -11,7 +11,7 @@ source:
     sha256: 8005fbdb16c6475f98e13b8f1423b0e9951c193681c2b0d19ae5b711d7e24ec1
 
 build:
-    number: 201
+    number: 202
     skip: true                # [win]
     features:
         - vc14                # [win and py35]
@@ -34,12 +34,12 @@ requirements:
         - toolchain
         - cmake
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.18*        # [not win]
+        - openblas 0.2.18|0.2.18.*        # [not win]
         - freeglut                # [linux]
         - python                  # [win]
     run:
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.18*        # [not win]
+        - openblas 0.2.18|0.2.18.*        # [not win]
         - freeglut                # [linux]
 test:
   requires:
