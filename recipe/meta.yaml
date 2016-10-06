@@ -12,6 +12,7 @@ source:
 
 build:
     number: 201
+    skip: true                # [win and not py35]
     features:
         - vc14                # [win and py35]
         - blas_{{ variant }}  # [unix]
