@@ -1,4 +1,4 @@
-{% set version = "3.5.3" %}
+{% set version = "3.5.4" %}
 {% set variant = "openblas" %}
 
 package:
@@ -8,10 +8,10 @@ package:
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: 8005fbdb16c6475f98e13b8f1423b0e9951c193681c2b0d19ae5b711d7e24ec1
+    sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
 
 build:
-    number: 201
+    number: 200
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and not py35]
@@ -34,7 +34,7 @@ build:
 requirements:
     build:
         - toolchain
-        - cmake
+        - cmake >=2.8.6
         - blas 1.1 {{ variant }}  # [not win]
         - openblas 0.2.18*        # [not win]
         - freeglut                # [linux]
