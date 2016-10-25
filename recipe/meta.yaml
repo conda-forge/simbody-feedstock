@@ -12,7 +12,9 @@ source:
 
 build:
     number: 201
-    skip: true                # [win]
+    # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
+    # which only Python 3.5 supports. So skip previous Python versions.
+    skip: true                # [win and not py35]
     features:
         - vc14                # [win and py35]
         - blas_{{ variant }}  # [unix]
@@ -45,29 +47,29 @@ test:
   requires:
     - python 3.5.*  # [win and py35]
   commands:
-    - if not exist %LIBRARY_BIN%\\simbody\\simbody-visualizer exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\Simbody.h exit 1           # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\SimTKcommon.h exit 1       # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\SimTKlapack.h exit 1       # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\SimTKmath.h exit 1         # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\SimTKsimbody_aux.h exit 1  # [win]
-    - if not exist %LIBRARY_INC%\\simbody\\SimTKsimbody.h exit 1      # [win]
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
+    - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
     - test -f $PREFIX/include/simbody/Simbody.h                       # [unix]
     - test -f $PREFIX/include/simbody/SimTKcommon.h                   # [unix]
     - test -f $PREFIX/include/simbody/SimTKlapack.h                   # [unix]
     - test -f $PREFIX/include/simbody/SimTKmath.h                     # [unix]
     - test -f $PREFIX/include/simbody/SimTKsimbody_aux.h              # [unix]
     - test -f $PREFIX/include/simbody/SimTKsimbody.h                  # [unix]
-    - if not exist %LIBRARY_LIB%\\libSimTKcommon.dll exit 1           # [win]
-    - if not exist %LIBRARY_LIB%\\libSimTKmath.dll exit 1             # [win]
-    - if not exist %LIBRARY_LIB%\\libSimTKsimbody.dll exit 1          # [win]
+    - if not exist %LIBRARY_INC%\\Simbody.h exit 1                    # [win]
+    - if not exist %LIBRARY_INC%\\SimTKcommon.h exit 1                # [win]
+    - if not exist %LIBRARY_INC%\\SimTKlapack.h exit 1                # [win]
+    - if not exist %LIBRARY_INC%\\SimTKmath.h exit 1                  # [win]
+    - if not exist %LIBRARY_INC%\\SimTKsimbody_aux.h exit 1           # [win]
+    - if not exist %LIBRARY_INC%\\SimTKsimbody.h exit 1               # [win]
     - test -f $PREFIX/lib/libSimTKcommon.so                           # [linux]
     - test -f $PREFIX/lib/libSimTKmath.so                             # [linux]
     - test -f $PREFIX/lib/libSimTKsimbody.so                          # [linux]
     - test -f $PREFIX/lib/libSimTKcommon.dylib                        # [osx]
     - test -f $PREFIX/lib/libSimTKmath.dylib                          # [osx]
     - test -f $PREFIX/lib/libSimTKsimbody.dylib                       # [osx]
+    - if not exist %LIBRARY_BIN%\\SimTKcommon.dll exit 1              # [win]
+    - if not exist %LIBRARY_BIN%\\SimTKmath.dll exit 1                # [win]
+    - if not exist %LIBRARY_BIN%\\SimTKsimbody.dll exit 1             # [win]
 
 about:
     home: https://simtk.org/home/simbody
