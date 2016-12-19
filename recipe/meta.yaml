@@ -36,12 +36,12 @@ requirements:
         - toolchain
         - cmake >=2.8.6
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.18|0.2.18.*        # [not win]
+        - openblas 0.2.19|0.2.19.*        # [not win]
         - freeglut                # [linux]
         - python                  # [win]
     run:
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.18|0.2.18.*        # [not win]
+        - openblas 0.2.19|0.2.19.*        # [not win]
         - freeglut                # [linux]
 test:
   requires:
