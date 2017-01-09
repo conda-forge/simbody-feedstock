@@ -10,7 +10,6 @@ source activate "${CONDA_DEFAULT_ENV}"
 mkdir build
 cd build
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	SHARED_EXT=so
 	# TODO: This test is failing for a yet-to-be-determined reason. See
 	# https://github.com/simbody/simbody/issues/400 for more details. Once
 	# that is figured out then this test should be enabled.
@@ -19,7 +18,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	# https://github.com/simbody/simbody/issues/511
 	GLUT_OVERRIDE=(-DCMAKE_CXX_FLAGS="-I$PREFIX/include")
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-	SHARED_EXT=dylib
 	SKIP_TEST=()
 	GLUT_OVERRIDE=()
 fi
@@ -27,7 +25,7 @@ cmake .. \
 	-DCMAKE_INSTALL_PREFIX="$PREFIX" \
 	-DCMAKE_INSTALL_LIBDIR="lib" \
 	-DCMAKE_BUILD_TYPE="RELEASE" \
-	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas.$SHARED_EXT" $GLUT_OVERRIDE
+	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
 make
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it
