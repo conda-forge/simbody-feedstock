@@ -11,7 +11,7 @@ source:
     sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
 
 build:
-    number: 204
+    number: 205
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and not py35]
@@ -36,12 +36,12 @@ requirements:
         - toolchain
         - cmake >=2.8.6
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.19|0.2.19.*        # [not win]
+        - openblas 0.2.20|0.2.20.*        # [not win]
         - freeglut                # [linux]
         - python                  # [win]
     run:
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.19|0.2.19.*        # [not win]
+        - openblas 0.2.20|0.2.20.*        # [not win]
         - freeglut                # [linux]
 test:
   requires:
