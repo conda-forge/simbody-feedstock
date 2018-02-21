@@ -34,6 +34,7 @@ build:
 requirements:
     build:
         - toolchain
+        - clangdev                # [osx]
         - cmake >=2.8.6
         - blas 1.1 {{ variant }}  # [not win]
         - openblas 0.2.20|0.2.20.*        # [not win]
