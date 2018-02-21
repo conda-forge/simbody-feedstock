@@ -1,4 +1,4 @@
-{% set version = "3.5.4" %}
+{% set version = "3.6" %}
 {% set variant = "openblas" %}
 
 package:
@@ -8,15 +8,15 @@ package:
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
+    sha256: bafce4b32dda4e174700733da1cd4f5f77f490daa96b92ed64bb881b0a885aa8
 
 build:
-    number: 205
+    number: 201
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
-    # which only Python 3.5 supports. So skip previous Python versions.
-    skip: true                # [win and not py35]
+    # which only Python 3.5+ supports. So skip previous Python versions.
+    skip: true                # [win and not (py35 or py36)]
     features:
-        - vc14                # [win and py35]
+        - vc14                # [win and (py35 or py36)]
         - blas_{{ variant }}  # [unix]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
@@ -46,6 +46,7 @@ requirements:
 test:
   requires:
     - python 3.5.*  # [win and py35]
+    - python 3.6.*  # [win and py36]
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
     - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
