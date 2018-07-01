@@ -11,12 +11,11 @@ source:
     sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
 
 build:
-    number: 205
+    number: 206
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
-    skip: true                # [win and not py35]
+    skip: true                # [win and vc<14]
     features:
-        - vc14                # [win and py35]
         - blas_{{ variant }}  # [unix]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
@@ -33,15 +32,16 @@ build:
 # documentation is not built.
 requirements:
     build:
-        - toolchain
         - cmake >=2.8.6
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+    host:
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.20|0.2.20.*        # [not win]
+        - openblas                        # [not win]
         - freeglut                # [linux]
-        - python                  # [win]
     run:
         - blas 1.1 {{ variant }}  # [not win]
-        - openblas 0.2.20|0.2.20.*        # [not win]
+        - openblas                        # [not win]
         - freeglut                # [linux]
 test:
   requires:
