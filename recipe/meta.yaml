@@ -36,9 +36,6 @@ requirements:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
     host:
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-    host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                        # [not win]
         - freeglut                # [linux]
