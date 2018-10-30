@@ -1,4 +1,4 @@
-{% set version = "3.5.4" %}
+{% set version = "3.6.1" %}
 {% set variant = "openblas" %}
 
 package:
@@ -11,7 +11,7 @@ source:
     sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
 
 build:
-    number: 206
+    number: 0
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
@@ -32,7 +32,7 @@ build:
 # documentation is not built.
 requirements:
     build:
-        - cmake >=2.8.6
+        - cmake >=3.1.3
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
     host:
