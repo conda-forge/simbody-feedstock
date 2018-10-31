@@ -14,6 +14,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	# https://github.com/simbody/simbody/issues/400 for more details. Once
 	# that is figured out then this test should be enabled.
 	SKIP_TEST="-E TestCustomConstraints"
+	echo $PREFIX
+	ls $PREFIX
+	ls $PREFIX/include
 	GLUT_OVERRIDE=(-DCMAKE_CXX_FLAGS="-I$PREFIX/include")
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	SKIP_TEST=()
