@@ -25,11 +25,8 @@ build:
 # OSX. We build against the openblas available in conda-forge which includes
 # lapack on Linux and OSX. blas and lapack are not needed on Windows because
 # Simbody includes them. For the visualizer, FreeGLUT is available via
-# anaconda.org and conda-forge but libXi and libXmu are not, so the user will
-# need those to be installed via their Linux package manager. Glut is included
-# with Simbody for Windows and OSX includes a Glut implementation. TODO:
-# Doxygen is the only dependency that is omitted here, so the rendered
-# documentation is not built.
+# anaconda.org. Glut is included with Simbody for Windows and OSX includes a
+# Glut implementation.
 requirements:
     build:
         - cmake >=3.1.3
@@ -40,6 +37,7 @@ requirements:
         - freeglut                # [linux]
         - xorg-libxi              # [linux]
         - xorg-libxmu             # [linux]
+        - doxygen
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
