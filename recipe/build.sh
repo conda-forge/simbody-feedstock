@@ -31,7 +31,7 @@ cmake .. \
 	-DCMAKE_BUILD_TYPE="RELEASE" \
     -DCMAKE_VERBOSE_MAKEFILE=on \
 	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
-make doxygen
+# make doxygen
 make --jobs 4
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it
