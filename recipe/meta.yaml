@@ -9,6 +9,8 @@ source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
+    patches:
+        - opengl_modern_cmake.patch # [linux]
 
 build:
     number: 1001
@@ -29,31 +31,32 @@ build:
 # Glut implementation.
 requirements:
     build:
-        - cmake >=3.1.3
+        # CMake 3.8 provides imported targets for OpenGL.
+        - cmake >=3.8
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
-        # - xorg-libxi              # [linux]
-        # - xorg-libxmu             # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
         # - doxygen
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
-        # - mesa                    # [linux]
-        # - libglu                  # [linux]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
         - freeglut                # [linux]
-        # - xorg-libxi              # [linux]
-        # - xorg-libxmu             # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
     run:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
-        # - mesa                    # [linux]
-        # - libglu                  # [linux]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
         - freeglut                # [linux]
-        # - xorg-libxi              # [linux]
-        # - xorg-libxmu             # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
         
 test:
   requires:

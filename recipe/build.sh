@@ -23,7 +23,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 ls $PREFIX/lib
-cp /usr/lib64/libGL.so $PREFIX/lib
+# cp /usr/lib64/libGL.so $PREFIX/lib
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX="$PREFIX" \
 	-DCMAKE_INSTALL_LIBDIR="lib" \
@@ -31,7 +31,7 @@ cmake .. \
     -DCMAKE_VERBOSE_MAKEFILE=on \
 	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
 # make doxygen
-make --jobs 4
+make --jobs ${CPU_COUNT}
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it
 # won't be run in the build directory.

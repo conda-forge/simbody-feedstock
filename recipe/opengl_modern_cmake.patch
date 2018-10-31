@@ -1,0 +1,39 @@
+diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+index be78c913..9372ad9b 100644
+--- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
++++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+@@ -42,10 +42,6 @@ add_executable(${GUI_NAME}
+     simbody-visualizer.cpp lodepng.cpp lodepng.h
+     ${GLUT32_HEADERS}) # only on Windows
+ 
+-if(NOT WIN32)
+-    target_include_directories(${GUI_NAME} PRIVATE ${GLUT_INCLUDE_DIR})
+-endif()
+-
+ # If building as debug, append the debug postfix to the name of the executable.
+ # CMAKE_DEBUG_POSTFIX only affects non-executable targets, but we use its value
+ # to set the postfix for this executable.
+@@ -76,7 +72,22 @@ else()
+     target_link_libraries(${GUI_NAME} ${TEST_STATIC_TARGET})
+ endif()
+     
+-target_link_libraries(${GUI_NAME} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
++message("DEBUG GLUT_LIBRARIES ${GLUT_LIBRARIES}")
++message("DEBUG OPENGL_LIBRARIES ${OPENGL_LIBRARIES}")
++message("DEBUG ${CMAKE_CXX_IMPLICIT_LINK_DIRECTORIES}")
++if(CMAKE_VERSION VERSION_LESS 3.8)
++    if(NOT WIN32)
++        target_include_directories(${GUI_NAME} PRIVATE ${GLUT_INCLUDE_DIR})
++    endif()
++    target_link_libraries(${GUI_NAME} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
++else()
++    if(WIN32)
++        target_link_libraries(${GUI_NAME} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
++    else()
++        target_link_libraries(${GUI_NAME} PRIVATE OpenGL::GL OpenGL::GLU GLUT::GLUT)
++    endif()
++endif()
++
+ 
+ # SIMBODY_VISUALIZER_INSTALL_DIR is set in the root CMakeLists.txt
+ install(TARGETS ${GUI_NAME}
