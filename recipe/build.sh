@@ -17,7 +17,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	echo $PREFIX
 	ls $PREFIX
 	ls $PREFIX/include
-	ls "DEBUG"
+	echo "DEBUG"
 	ls $PREFIX/include/GL
 	GLUT_OVERRIDE=(-DCMAKE_CXX_FLAGS="-I$PREFIX/include")
 elif [[ "$OSTYPE" == "darwin"* ]]; then
