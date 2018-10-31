@@ -33,7 +33,7 @@ requirements:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - mesa                    # [linux]
-        # - libglu                  # [linux]
+        - libglu                  # [linux]
         - freeglut                # [linux]
         # - xorg-libxi              # [linux]
         # - xorg-libxmu             # [linux]

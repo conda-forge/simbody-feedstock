@@ -22,6 +22,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	GLUT_OVERRIDE=()
 fi
 
+ls $PREFIX/lib
 cp /usr/lib64/libGL.so $PREFIX/lib
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX="$PREFIX" \
