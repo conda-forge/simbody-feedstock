@@ -21,10 +21,13 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	SKIP_TEST=()
 	GLUT_OVERRIDE=()
 fi
+
+cp /usr/lib64/libGL.so $PREFIX/lib
 cmake .. \
 	-DCMAKE_INSTALL_PREFIX="$PREFIX" \
 	-DCMAKE_INSTALL_LIBDIR="lib" \
 	-DCMAKE_BUILD_TYPE="RELEASE" \
+    -DCMAKE_VERBOSE_MAKEFILE=on \
 	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
 # make doxygen
 make --jobs 4
