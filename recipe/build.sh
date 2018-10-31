@@ -14,12 +14,8 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	# https://github.com/simbody/simbody/issues/400 for more details. Once
 	# that is figured out then this test should be enabled.
 	SKIP_TEST="-E TestCustomConstraints"
-	echo $PREFIX
-	ls $PREFIX
-	ls $PREFIX/include
-	echo "DEBUG"
-	ls $PREFIX/include/GL
-	ls $PREFIX/lib
+	# The CMAKE_CXX_FLAGS is required due to this bug in Simbody:
+	# https://github.com/simbody/simbody/issues/511
 	GLUT_OVERRIDE=(-DCMAKE_CXX_FLAGS="-I$PREFIX/include")
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	SKIP_TEST=()
@@ -29,7 +25,6 @@ cmake .. \
 	-DCMAKE_INSTALL_PREFIX="$PREFIX" \
 	-DCMAKE_INSTALL_LIBDIR="lib" \
 	-DCMAKE_BUILD_TYPE="RELEASE" \
-    -DCMAKE_VERBOSE_MAKEFILE=on \
 	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
 # make doxygen
 make --jobs 4
