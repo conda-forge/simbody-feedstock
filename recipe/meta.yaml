@@ -35,19 +35,27 @@ requirements:
         - cmake >=3.1.3
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-        - freeglut                # [linux]
         - mesa                    # [linux]
-        # - xorg-libxi              # [linux]
-        # - xorg-libxmu             # [linux]
-        # TODO - libglu                  # [linux]
+        - libglu                  # [linux]
+        - freeglut                # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
         - freeglut                # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
     run:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
         - freeglut                # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
         
 test:
   requires:
