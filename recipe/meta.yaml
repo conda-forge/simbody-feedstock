@@ -9,8 +9,6 @@ source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
-    patches:
-        - opengl_modern_cmake.patch  # [linux]
 
 build:
     number: 1001
@@ -32,57 +30,22 @@ build:
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
-        # CMake 3.8 provides imported targets for OpenGL.
-        - cmake >=3.8
+        - cmake >=3.1.3
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-          #        - mesa                    # [linux]
-          #        - libglu                  # [linux]
-          #        - freeglut                # [linux]
-          #        - xorg-libxi              # [linux]
-          #        - xorg-libxmu             # [linux]
-          #        - libselinux-cos6-x86_64  # [linux]
-        # - doxygen
-        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-        - {{ cdt('mesa-libgl-devel') }}      # [linux]
-        - {{ cdt('libx11-devel') }}          # [linux]
-        - {{ cdt('libxext-devel') }}         # [linux]
-        - {{ cdt('libxrender-devel') }}      # [linux]
-        - {{ cdt('mesa-libgl-devel') }}      # [linux]
-        - {{ cdt('mesa-libegl-devel') }}     # [linux]
-        - {{ cdt('mesa-dri-drivers') }}      # [linux]
-        - {{ cdt('libxau-devel') }}          # [linux]
-        - {{ cdt('libdrm-devel') }}          # [linux]
-        - {{ cdt('libxcomposite-devel') }}   # [linux]
-        - {{ cdt('libxcursor-devel') }}      # [linux]
-        - {{ cdt('libxi-devel') }}           # [linux]
-        - {{ cdt('libxrandr-devel') }}       # [linux]
-        - {{ cdt('libxscrnsaver-devel') }}   # [linux]
-        - {{ cdt('libxtst-devel') }}         # [linux]
-        - {{ cdt('libselinux-devel') }}      # [linux]
-        - {{ cdt('libxdamage') }}            # [linux]
+        - doxygen                 # [not linux]
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
-        - mesa                    # [linux]
-        - libglu                  # [linux]
-        - freeglut                # [linux]
-        - xorg-libxi              # [linux]
-        - xorg-libxmu             # [linux]
     run:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
-        - mesa                    # [linux]
-        - libglu                  # [linux]
-        - freeglut                # [linux]
-        - xorg-libxi              # [linux]
-        - xorg-libxmu             # [linux]
         
 test:
   requires:
     - python 3.5.*  # [win and py35]
   commands:
-    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [osx]
     - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
     - test -f $PREFIX/include/simbody/Simbody.h                       # [unix]
     - test -f $PREFIX/include/simbody/SimTKcommon.h                   # [unix]
