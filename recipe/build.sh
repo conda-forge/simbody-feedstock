@@ -29,7 +29,7 @@ cmake .. \
     ${CMAKE_PLATFORM_FLAGS[@]} \
 	-DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
 make --jobs ${CPU_COUNT}
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
     make doxygen
 fi
 # NOTE: Run the tests here in the build directory to make sure things are built
