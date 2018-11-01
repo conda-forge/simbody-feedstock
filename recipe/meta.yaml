@@ -45,6 +45,7 @@ requirements:
         # - doxygen
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
         - {{ cdt('mesa-libgl-devel') }}      # [linux]
+        - {{ cdt('mesa-libgl-devel-cos6-x86_64') }}      # [linux]
         - {{ cdt('libx11-devel') }}          # [linux]
         - {{ cdt('libxext-devel') }}         # [linux]
         - {{ cdt('libxrender-devel') }}      # [linux]
@@ -61,6 +62,11 @@ requirements:
         - {{ cdt('libxtst-devel') }}         # [linux]
         - {{ cdt('libselinux-devel') }}      # [linux]
         - {{ cdt('libxdamage') }}            # [linux]
+        - {{ cdt('libxcb') }}               # [linux]
+        - {{ cdt('libx11-devel') }}         # [linux]
+        - {{ cdt('libxfixes-devel') }}      # [linux]
+        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
