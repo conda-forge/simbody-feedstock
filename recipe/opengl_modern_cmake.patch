@@ -1,13 +1,14 @@
 diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
-index be78c913..80f2c7fa 100644
+index be78c913..086ca09a 100644
 --- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 +++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
-@@ -38,14 +38,14 @@ endif()
+@@ -38,14 +38,15 @@ endif()
  
  if(OPENGL_FOUND AND SIMBODY_HAS_GLUT)
  
 +if(UNIX AND NOT APPLE)
 +    link_directories(/usr/lib64)
++    link_directories("${PREFIX}/lib")
 +endif()
 +
  add_executable(${GUI_NAME} 
@@ -21,7 +22,7 @@ index be78c913..80f2c7fa 100644
  # If building as debug, append the debug postfix to the name of the executable.
  # CMAKE_DEBUG_POSTFIX only affects non-executable targets, but we use its value
  # to set the postfix for this executable.
-@@ -76,7 +76,22 @@ else()
+@@ -76,7 +77,22 @@ else()
      target_link_libraries(${GUI_NAME} ${TEST_STATIC_TARGET})
  endif()
      

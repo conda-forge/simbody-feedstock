@@ -40,6 +40,7 @@ requirements:
         - freeglut                # [linux]
         - xorg-libxi              # [linux]
         - xorg-libxmu             # [linux]
+        - libselinux-cos6-x86_64  # [linux]
         # - doxygen
     host:
         - blas 1.1 {{ variant }}  # [not win]
