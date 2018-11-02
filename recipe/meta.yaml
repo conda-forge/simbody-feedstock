@@ -45,7 +45,6 @@ requirements:
         # - doxygen
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
         - {{ cdt('mesa-libgl-devel') }}      # [linux]
-        - {{ cdt('mesa-libgl-devel-cos6-x86_64') }}      # [linux]
         - {{ cdt('libx11-devel') }}          # [linux]
         - {{ cdt('libxext-devel') }}         # [linux]
         - {{ cdt('libxrender-devel') }}      # [linux]
