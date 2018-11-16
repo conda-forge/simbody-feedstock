@@ -12,6 +12,8 @@ source:
 
 build:
     number: 1001
+    run_exports:
+        - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
