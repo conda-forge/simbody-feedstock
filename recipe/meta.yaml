@@ -9,8 +9,6 @@ source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
-    patches:
-        - opengl_modern_cmake.patch  # [linux]
 
 build:
     number: 1002
