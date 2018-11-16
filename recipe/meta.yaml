@@ -11,7 +11,7 @@ source:
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
 
 build:
-    number: 1001
+    number: 1002
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
@@ -32,21 +32,59 @@ build:
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
-        - cmake >=3.1.3
+        # CMake 3.8 provides imported targets for OpenGL.
+        - cmake >=3.8
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
+        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+        - {{ cdt('mesa-libgl-devel') }}      # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxext-devel') }}         # [linux]
+        - {{ cdt('libxrender-devel') }}      # [linux]
+        - {{ cdt('mesa-libegl-devel') }}     # [linux]
+        - {{ cdt('mesa-dri-drivers') }}      # [linux]
+        - {{ cdt('libxau-devel') }}          # [linux]
+        - {{ cdt('libdrm-devel') }}          # [linux]
+        - {{ cdt('libxcomposite-devel') }}   # [linux]
+        - {{ cdt('libxcursor-devel') }}      # [linux]
+        - {{ cdt('libxi-devel') }}           # [linux]
+        - {{ cdt('libxrandr-devel') }}       # [linux]
+        - {{ cdt('libxscrnsaver-devel') }}   # [linux]
+        - {{ cdt('libxtst-devel') }}         # [linux]
+        - {{ cdt('libselinux-devel') }}      # [linux]
+        - {{ cdt('libxdamage') }}            # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxfixes-devel') }}       # [linux]
+        - {{ cdt('libsm-devel') }}           # [linux]
+        - {{ cdt('libice-devel') }}          # [linux]
+        - {{ cdt('libxt') }}                 # [linux]
+        - {{ cdt('libxt-devel') }}           # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libxau') }}                # [linux]
+        - {{ cdt('libxxf86vm') }}            # [linux]
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
+        - freeglut                # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
     run:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
+        - mesa                    # [linux]
+        - libglu                  # [linux]
+        - freeglut                # [linux]
+        - xorg-libxi              # [linux]
+        - xorg-libxmu             # [linux]
         
 test:
   requires:
     - python 3.5.*  # [win and py35]
   commands:
-    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [osx]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
     - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
     - test -f $PREFIX/include/simbody/Simbody.h                       # [unix]
     - test -f $PREFIX/include/simbody/SimTKcommon.h                   # [unix]
