@@ -14,7 +14,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	GLUT_OVERRIDE=(-DCMAKE_CXX_FLAGS="-I$PREFIX/include")
     CMAKE_PLATFORM_FLAGS+=(-DCMAKE_TOOLCHAIN_FILE="${RECIPE_DIR}/cross-linux.cmake")
     # TODO: Temporary, because setting up OpenGL is challenging.
-    CMAKE_PLATFORM_FLAGS+=(-DBUILD_VISUALIZER=off)
+    # TODO CMAKE_PLATFORM_FLAGS+=(-DBUILD_VISUALIZER=off)
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	SKIP_TEST=()
 	GLUT_OVERRIDE=()
