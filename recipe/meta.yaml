@@ -64,7 +64,12 @@ requirements:
         - {{ cdt('libxcb') }}               # [linux]
         - {{ cdt('libx11-devel') }}         # [linux]
         - {{ cdt('libxfixes-devel') }}      # [linux]
-        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+        - {{ cdt('libsm-devel') }}           # [linux]
+        - {{ cdt('libice-devel') }}          # [linux]
+        - {{ cdt('libxt') }}                 # [linux]
+        - {{ cdt('libxt-devel') }}           # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libxau') }}                # [linux]
 
     host:
         - blas 1.1 {{ variant }}  # [not win]
