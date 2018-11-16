@@ -1,3 +1,4 @@
+# This toolchain file is required to find OpenGL on Linux.
 # https://github.com/ContinuumIO/anaconda-issues/issues/8779
 # https://github.com/AnacondaRecipes/freeglut-feedstock/blob/master/recipe/cross-linux.cmake
 # this one is important

@@ -14,6 +14,8 @@ source:
 
 build:
     number: 1001
+    run_exports:
+        - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
@@ -36,19 +38,11 @@ requirements:
         - cmake >=3.8
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
-          #        - mesa                    # [linux]
-          #        - libglu                  # [linux]
-          #        - freeglut                # [linux]
-          #        - xorg-libxi              # [linux]
-          #        - xorg-libxmu             # [linux]
-          #        - libselinux-cos6-x86_64  # [linux]
-        # - doxygen
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
         - {{ cdt('mesa-libgl-devel') }}      # [linux]
         - {{ cdt('libx11-devel') }}          # [linux]
         - {{ cdt('libxext-devel') }}         # [linux]
         - {{ cdt('libxrender-devel') }}      # [linux]
-        # TODO - {{ cdt('mesa-libglu-devel') }}      # [linux]
         - {{ cdt('mesa-libegl-devel') }}     # [linux]
         - {{ cdt('mesa-dri-drivers') }}      # [linux]
         - {{ cdt('libxau-devel') }}          # [linux]
@@ -61,17 +55,16 @@ requirements:
         - {{ cdt('libxtst-devel') }}         # [linux]
         - {{ cdt('libselinux-devel') }}      # [linux]
         - {{ cdt('libxdamage') }}            # [linux]
-        - {{ cdt('libxcb') }}               # [linux]
-        - {{ cdt('libx11-devel') }}         # [linux]
-        - {{ cdt('libxfixes-devel') }}      # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxfixes-devel') }}       # [linux]
         - {{ cdt('libsm-devel') }}           # [linux]
         - {{ cdt('libice-devel') }}          # [linux]
         - {{ cdt('libxt') }}                 # [linux]
         - {{ cdt('libxt-devel') }}           # [linux]
         - {{ cdt('libxcb') }}                # [linux]
         - {{ cdt('libxau') }}                # [linux]
-        - {{ cdt('libxxf86vm') }}             # [linux]
-
+        - {{ cdt('libxxf86vm') }}            # [linux]
     host:
         - blas 1.1 {{ variant }}  # [not win]
         - openblas                # [not win]
