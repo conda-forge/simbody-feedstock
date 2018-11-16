@@ -13,7 +13,7 @@ source:
         - opengl_modern_cmake.patch  # [linux]
 
 build:
-    number: 1001
+    number: 1002
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
