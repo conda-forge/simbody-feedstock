@@ -1,5 +1,4 @@
 {% set version = "3.6.1" %}
-{% set variant = "openblas" %}
 
 package:
     name: simbody
@@ -11,14 +10,13 @@ source:
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
 
 build:
-    number: 1002
+    number: 1003
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
     features:
-        - blas_{{ variant }}  # [unix]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
@@ -64,16 +62,14 @@ requirements:
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
     host:
-        - blas 1.1 {{ variant }}  # [not win]
-        - openblas                # [not win]
+      - libblas
+      - libcblas
         - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
         - xorg-libxi              # [linux]
         - xorg-libxmu             # [linux]
     run:
-        - blas 1.1 {{ variant }}  # [not win]
-        - openblas                # [not win]
         - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
