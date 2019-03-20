@@ -16,7 +16,6 @@ build:
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
-    features:
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
@@ -62,8 +61,9 @@ requirements:
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
     host:
-      - libblas
-      - libcblas
+        - libblas
+        - libcblas
+        - liblapack
         - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
