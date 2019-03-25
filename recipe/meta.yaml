@@ -66,6 +66,7 @@ requirements:
         - liblapack
         - libglu                  # [linux]
         - freeglut                # [linux]
+        - xorg-libxmu             # [linux]
     run:
         - libglu                  # [linux]
         - freeglut                # [linux]
