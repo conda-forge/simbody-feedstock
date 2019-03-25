@@ -64,17 +64,11 @@ requirements:
         - libblas
         - libcblas
         - liblapack
-        - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
-        - xorg-libxi              # [linux]
-        - xorg-libxmu             # [linux]
     run:
-        - mesa                    # [linux]
         - libglu                  # [linux]
         - freeglut                # [linux]
-        - xorg-libxi              # [linux]
-        - xorg-libxmu             # [linux]
         
 test:
   requires:
