@@ -27,7 +27,7 @@ cmake .. \
     -DCMAKE_INSTALL_LIBDIR="lib" \
     -DCMAKE_BUILD_TYPE="RELEASE" \
     ${CMAKE_PLATFORM_FLAGS[@]} \
-    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}" $GLUT_OVERRIDE
+    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/liblapack${SHLIB_EXT};$PREFIX/lib/libblas${SHLIB_EXT}" $GLUT_OVERRIDE
 make --jobs ${CPU_COUNT}
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it
