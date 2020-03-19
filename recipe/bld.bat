@@ -11,8 +11,9 @@ cmake -GNinja ^
   -DBUILD_USING_OTHER_LAPACK="%LIBRARY_LIB%\lapack.lib;%LIBRARY_LIB%\blas.lib" ^
   ..
 
-cmake --build . --target doxygen --config Release
-cmake --build . --target install --config Release
+ninja
+ninja doxygen
+ninja install
 REM NOTE: Run the tests here in the build directory to make sure things are
 REM built correctly. This cannot be specified in the meta.yml:test section
 REM because it won't be run in the build directory.
