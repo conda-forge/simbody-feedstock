@@ -61,6 +61,7 @@ requirements:
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
         - ninja  # [win]
+        - doxygen
     host:
         - libblas
         - libcblas
