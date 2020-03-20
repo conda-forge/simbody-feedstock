@@ -10,7 +10,7 @@ source:
     sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
 
 build:
-    number: 1003
+    number: 1004
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
