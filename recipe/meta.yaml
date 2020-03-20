@@ -60,6 +60,7 @@ requirements:
         - {{ cdt('libxcb') }}                # [linux]
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
+        - ninja  # [win]
     host:
         - libblas
         - libcblas
