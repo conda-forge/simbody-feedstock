@@ -62,6 +62,10 @@ requirements:
         - {{ cdt('libxxf86vm') }}            # [linux]
         - ninja  # [win]
         - doxygen
+        # try this - not normal
+        - libblas
+        - libcblas
+        - liblapack
     host:
         - libblas
         - libcblas
