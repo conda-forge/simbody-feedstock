@@ -14,7 +14,7 @@ cmake -G Ninja .. -LAH ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
   -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
-  -DBUILD_USING_OTHER_LAPACK="%LIBRARY_BIN%/lapack.dll;%LIBRARY_BIN%/blas.dll"
+  -DBUILD_USING_OTHER_LAPACK="%LIBRARY_BIN%/liblapack.dll;%LIBRARY_BIN%/libblas.dll"
 
 ninja doxygen
 ninja
