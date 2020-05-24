@@ -1,16 +1,17 @@
 
 del /f Platform\Windows\lib_x64\*.dll
 del /f Platform\Windows\lib_x64\*.lib
-copy %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
+REM copy %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
+echo "LIBRARY_DIR DEBUG"
+dir %LIBRARY_LIB%
 
 mkdir build
 cd build
-cmake -G Ninja ^
+cmake -G Ninja .. ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
   -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
-  -DBUILD_USING_OTHER_LAPACK="%LIBRARY_LIB%\lapack.lib;%LIBRARY_LIB%\blas.lib" ^
-  ..
+  -DBUILD_USING_OTHER_LAPACK="%LIBRARY_BIN%/lapack.dll;%LIBRARY_BIN%/blas.dll"
 
 ninja doxygen
 ninja
