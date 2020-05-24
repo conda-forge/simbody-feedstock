@@ -18,7 +18,7 @@ if [[ "$c_compiler" == "gcc" ]]; then
   export PATH="${PATH}:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
 fi
 
-cmake .. \
+cmake .. -LAH \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
     -DCMAKE_BUILD_TYPE="Release" \

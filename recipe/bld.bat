@@ -2,12 +2,15 @@
 del /f Platform\Windows\lib_x64\*.dll
 del /f Platform\Windows\lib_x64\*.lib
 REM copy %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
-echo "LIBRARY_DIR DEBUG"
+echo "LIBRARY_LIB DEBUG"
 dir %LIBRARY_LIB%
+echo "LIBRARY_BIN DEBUG"
+dir %LIBRARY_BIN%
 
 mkdir build
 cd build
-cmake -G Ninja .. ^
+REM -LAH prints the values of all CMake variables.
+cmake -G Ninja .. -LAH ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
   -DCMAKE_PREFIX_PATH="%LIBRARY_PREFIX%" ^
