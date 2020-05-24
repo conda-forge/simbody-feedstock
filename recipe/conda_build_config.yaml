@@ -2,9 +2,9 @@
 #   - 10.10
 # macos_min_version:
 #   - 10.10
-c_compiler:
-  - gcc      # [linux]
-  - clang    # [osx]
-cxx_compiler:
-  - gxx      # [linux]
-  - clangxx  # [osx]
+# c_compiler:
+#   - gcc      # [linux]
+#   - clang    # [osx]
+# cxx_compiler:
+#   - gxx      # [linux]
+#   - clangxx  # [osx]
