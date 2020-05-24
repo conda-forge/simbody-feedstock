@@ -1,7 +1,7 @@
 
-REM del /f Platform\Windows\lib_x64\*.dll
-REM del /f Platform\Windows\lib_x64\*.lib
-REM cp %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
+del /f Platform\Windows\lib_x64\*.dll
+del /f Platform\Windows\lib_x64\*.lib
+copy %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
 
 mkdir build
 cd build
