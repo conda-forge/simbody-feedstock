@@ -1,5 +1,4 @@
-{% set version = "3.5.4" %}
-{% set variant = "openblas" %}
+{% set version = "3.6.1" %}
 
 package:
     name: simbody
@@ -8,15 +7,15 @@ package:
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: 449c36e574d6f859d4fa8854ab6bc8e402e5ca5894bcce3e9fdce2f5658d64de
+    sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
 
 build:
-    number: 206
+    number: 1003
+    run_exports:
+        - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
     # which only Python 3.5 supports. So skip previous Python versions.
     skip: true                # [win and vc<14]
-    features:
-        - blas_{{ variant }}  # [unix]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
@@ -25,24 +24,53 @@ build:
 # OSX. We build against the openblas available in conda-forge which includes
 # lapack on Linux and OSX. blas and lapack are not needed on Windows because
 # Simbody includes them. For the visualizer, FreeGLUT is available via
-# anaconda.org and conda-forge but libXi and libXmu are not, so the user will
-# need those to be installed via their Linux package manager. Glut is included
-# with Simbody for Windows and OSX includes a Glut implementation. TODO:
-# Doxygen is the only dependency that is omitted here, so the rendered
-# documentation is not built.
+# anaconda.org. Glut is included with Simbody for Windows and OSX includes a
+# Glut implementation.
+# https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
-        - cmake >=2.8.6
+        # CMake 3.8 provides imported targets for OpenGL.
+        - cmake >=3.8
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
+        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+        - {{ cdt('mesa-libgl-devel') }}      # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxext-devel') }}         # [linux]
+        - {{ cdt('libxrender-devel') }}      # [linux]
+        - {{ cdt('mesa-libegl-devel') }}     # [linux]
+        - {{ cdt('mesa-dri-drivers') }}      # [linux]
+        - {{ cdt('libxau-devel') }}          # [linux]
+        - {{ cdt('libdrm-devel') }}          # [linux]
+        - {{ cdt('libxcomposite-devel') }}   # [linux]
+        - {{ cdt('libxcursor-devel') }}      # [linux]
+        - {{ cdt('libxi-devel') }}           # [linux]
+        - {{ cdt('libxrandr-devel') }}       # [linux]
+        - {{ cdt('libxscrnsaver-devel') }}   # [linux]
+        - {{ cdt('libxtst-devel') }}         # [linux]
+        - {{ cdt('libselinux-devel') }}      # [linux]
+        - {{ cdt('libxdamage') }}            # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxfixes-devel') }}       # [linux]
+        - {{ cdt('libsm-devel') }}           # [linux]
+        - {{ cdt('libice-devel') }}          # [linux]
+        - {{ cdt('libxt') }}                 # [linux]
+        - {{ cdt('libxt-devel') }}           # [linux]
+        - {{ cdt('libxcb') }}                # [linux]
+        - {{ cdt('libxau') }}                # [linux]
+        - {{ cdt('libxxf86vm') }}            # [linux]
     host:
-        - blas 1.1 {{ variant }}  # [not win]
-        - openblas                        # [not win]
+        - libblas
+        - libcblas
+        - liblapack
+        - libglu                  # [linux]
         - freeglut                # [linux]
+        - xorg-libxmu             # [linux]
     run:
-        - blas 1.1 {{ variant }}  # [not win]
-        - openblas                        # [not win]
+        - libglu                  # [linux]
         - freeglut                # [linux]
+        
 test:
   requires:
     - python 3.5.*  # [win and py35]
