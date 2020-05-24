@@ -13,6 +13,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     SKIP_TEST=()
 fi
 
+# TODO: Is this still necessary?
 if [[ "$c_compiler" == "gcc" ]]; then
   export PATH="${PATH}:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
 fi
@@ -20,7 +21,7 @@ fi
 cmake .. \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
-    -DCMAKE_BUILD_TYPE="RELEASE" \
+    -DCMAKE_BUILD_TYPE="Release" \
     -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/liblapack${SHLIB_EXT};$PREFIX/lib/libblas${SHLIB_EXT}"
 
 make --jobs ${CPU_COUNT}
