@@ -70,10 +70,9 @@ requirements:
         - freeglut                # [linux]
         
 test:
-  requires:
-    - python 3.5.*  # [win and py35]
   commands:
-    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer.app/Contents/MacOS/simbody-visualizer  # [linux]
     - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
     - test -f $PREFIX/include/simbody/Simbody.h                       # [unix]
     - test -f $PREFIX/include/simbody/SimTKcommon.h                   # [unix]
