@@ -1,7 +1,7 @@
 
-del /f Platform\Windows\lib_x64\*.dll
-del /f Platform\Windows\lib_x64\*.lib
-cp %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
+REM del /f Platform\Windows\lib_x64\*.dll
+REM del /f Platform\Windows\lib_x64\*.lib
+REM cp %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
 
 mkdir build
 cd build
@@ -13,8 +13,9 @@ cmake -G Ninja ^
   ..
 
 ninja doxygen
-ninja install
+ninja
 REM NOTE: Run the tests here in the build directory to make sure things are
 REM built correctly. This cannot be specified in the meta.yml:test section
 REM because it won't be run in the build directory.
 ctest --output-on-failure
+ninja install

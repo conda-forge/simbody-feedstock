@@ -24,6 +24,7 @@ cmake .. \
     -DCMAKE_BUILD_TYPE="Release" \
     -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/liblapack${SHLIB_EXT};$PREFIX/lib/libblas${SHLIB_EXT}"
 
+make doxygen
 make --jobs ${CPU_COUNT}
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it
