@@ -29,6 +29,7 @@ requirements:
         # CMake 3.8 provides imported targets for OpenGL.
         - cmake >=3.8
         - ninja  # [win]
+        - doxygen
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
