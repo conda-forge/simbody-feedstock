@@ -13,11 +13,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     SKIP_TEST=()
 fi
 
-# TODO: Is this still necessary?
-if [[ "$c_compiler" == "gcc" ]]; then
-  export PATH="${PATH}:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
-fi
-
+# -LAH prints the values of all CMake variables.
 cmake .. -LAH \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
