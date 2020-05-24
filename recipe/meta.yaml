@@ -103,6 +103,7 @@ test:
 about:
     home: https://simtk.org/home/simbody
     license: Apache-2.0
+    license_file: LICENSE.txt
     summary: >
         High-performance C++ multibody dynamics/physics library for simulating
         articulated biomechanical and mechanical systems like vehicles, robots,
