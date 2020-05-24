@@ -1,4 +1,4 @@
-{% set version = "3.6.1" %}
+{% set version = "3.7" %}
 
 package:
     name: simbody
@@ -7,10 +7,10 @@ package:
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
+    sha256: d371a92d440991400cb8e8e2473277a75307abb916e5aabc14194bea841b804a
 
 build:
-    number: 1003
+    number: 0
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
@@ -31,6 +31,7 @@ requirements:
     build:
         # CMake 3.8 provides imported targets for OpenGL.
         - cmake >=3.8
+        - ninja # [win]
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
