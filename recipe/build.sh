@@ -18,7 +18,7 @@ cmake .. -LAH \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
     -DCMAKE_BUILD_TYPE="Release" \
-    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/liblapack${SHLIB_EXT};$PREFIX/lib/libblas${SHLIB_EXT}"
+    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libopenblas${SHLIB_EXT}"
 
 make doxygen
 make --jobs ${CPU_COUNT}
