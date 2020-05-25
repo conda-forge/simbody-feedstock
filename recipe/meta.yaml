@@ -59,13 +59,15 @@ requirements:
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
     host:
-        - openblas
-        - libglu                  # [linux]
-        - freeglut                # [linux]
-        - xorg-libxmu             # [linux]
+        - openblas  # [win]
+        - libblas  # [not win]
+        - liblapack  # [not win]
+        - libglu  # [linux]
+        - freeglut  # [linux]
+        - xorg-libxmu  # [linux]
     run:
-        - libglu                  # [linux]
-        - freeglut                # [linux]
+        - libglu  # [linux]
+        - freeglut  # [linux]
         
 test:
   commands:
