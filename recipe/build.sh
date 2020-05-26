@@ -13,16 +13,14 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     SKIP_TEST=()
 fi
 
-if [[ "$c_compiler" == "gcc" ]]; then
-  export PATH="${PATH}:${BUILD_PREFIX}/${HOST}/sysroot/usr/lib:${BUILD_PREFIX}/${HOST}/sysroot/usr/include"
-fi
-
-cmake .. \
+# -LAH prints the values of all CMake variables.
+cmake .. -LAH \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
-    -DCMAKE_BUILD_TYPE="RELEASE" \
-    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/liblapack${SHLIB_EXT};$PREFIX/lib/libblas${SHLIB_EXT}"
+    -DCMAKE_BUILD_TYPE="Release" \
+    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libblas${SHLIB_EXT};$PREFIX/lib/liblapack${SHLIB_EXT}"
 
+make doxygen
 make --jobs ${CPU_COUNT}
 # NOTE: Run the tests here in the build directory to make sure things are built
 # correctly. This cannot be specified in the meta.yml:test section because it

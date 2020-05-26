@@ -1,4 +1,4 @@
-{% set version = "3.6.1" %}
+{% set version = "3.7" %}
 
 package:
     name: simbody
@@ -7,30 +7,28 @@ package:
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: 7716d6ea20b950e71e8535faa4353ac89716c03fd7a445dd802eb6a630796639
+    sha256: d371a92d440991400cb8e8e2473277a75307abb916e5aabc14194bea841b804a
 
 build:
-    number: 1003
+    number: 0
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
-    # NOTE : For C++11 builds, vc14/VS 2015 are the only acceptable targets
-    # which only Python 3.5 supports. So skip previous Python versions.
-    skip: true                # [win and vc<14]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
 
-# NOTE: This installs Simbody and the optional visualizer on Linux, Windows, and
-# OSX. We build against the openblas available in conda-forge which includes
-# lapack on Linux and OSX. blas and lapack are not needed on Windows because
-# Simbody includes them. For the visualizer, FreeGLUT is available via
-# anaconda.org. Glut is included with Simbody for Windows and OSX includes a
-# Glut implementation.
+# NOTE: This installs Simbody and the optional visualizer on Linux, Windows,
+# and OSX. On Windows, we build against the openblas available in conda-forge,
+# which includes lapack, because the other blas/lapack packages do not provide
+# import libraries (*.lib). We only depend on Glut on Linux, because Glut is
+# included with Simbody for Windows and OSX includes a Glut implementation.
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
         # CMake 3.8 provides imported targets for OpenGL.
         - cmake >=3.8
+        - ninja  # [win]
+        - doxygen
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
@@ -61,21 +59,20 @@ requirements:
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
     host:
-        - libblas
-        - libcblas
-        - liblapack
-        - libglu                  # [linux]
-        - freeglut                # [linux]
-        - xorg-libxmu             # [linux]
+        - openblas  # [win]
+        - libblas  # [not win]
+        - liblapack  # [not win]
+        - libglu  # [linux]
+        - freeglut  # [linux]
+        - xorg-libxmu  # [linux]
     run:
-        - libglu                  # [linux]
-        - freeglut                # [linux]
+        - libglu  # [linux]
+        - freeglut  # [linux]
         
 test:
-  requires:
-    - python 3.5.*  # [win and py35]
   commands:
-    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [unix]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
+    - test -f $PREFIX/libexec/simbody/simbody-visualizer.app/Contents/MacOS/simbody-visualizer  # [osx]
     - if not exist %LIBRARY_BIN%\\simbody-visualizer.exe exit 1       # [win]
     - test -f $PREFIX/include/simbody/Simbody.h                       # [unix]
     - test -f $PREFIX/include/simbody/SimTKcommon.h                   # [unix]
@@ -102,6 +99,9 @@ test:
 about:
     home: https://simtk.org/home/simbody
     license: Apache-2.0
+    license_file: LICENSE.txt
+    dev_url: https://github.com/simbody/simbody
+    doc_url: https://simbody.github.io
     summary: >
         High-performance C++ multibody dynamics/physics library for simulating
         articulated biomechanical and mechanical systems like vehicles, robots,
@@ -110,3 +110,4 @@ about:
 extra:
     recipe-maintainers:
         - moorepants
+        - chrisdembia
