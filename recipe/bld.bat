@@ -2,12 +2,6 @@
 REM Do not overwrite Conda's libraries with Simbody's vendored libraries.
 del /f Platform\Windows\lib_x64\*.dll
 del /f Platform\Windows\lib_x64\*.lib
-REM copy %LIBRARY_LIB%\lapack.lib Platform\Windows\lib_x64\lapack.lib
-REM copy %LIBRARY_LIB%\blas.lib Platform\Windows\lib_x64\blas.lib
-REM echo "LIBRARY_LIB DEBUG"
-REM dir %LIBRARY_LIB%
-REM echo "LIBRARY_BIN DEBUG"
-REM dir %LIBRARY_BIN%
 
 mkdir build
 cd build

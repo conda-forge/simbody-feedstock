@@ -17,11 +17,11 @@ build:
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
 
-# NOTE: This installs Simbody and the optional visualizer on Linux, Windows, and
-# OSX. We build against the openblas available in conda-forge which includes
-# lapack on Linux and OSX. For the visualizer, FreeGLUT is available via
-# anaconda.org. Glut is included with Simbody for Windows and OSX includes a
-# Glut implementation.
+# NOTE: This installs Simbody and the optional visualizer on Linux, Windows,
+# and OSX. On Windows, we build against the openblas available in conda-forge,
+# which includes lapack, because the other blas/lapack packages do not provide
+# import libraries (*.lib). We only depend on Glut on Linux, because Glut is
+# included with Simbody for Windows and OSX includes a Glut implementation.
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
@@ -100,6 +100,8 @@ about:
     home: https://simtk.org/home/simbody
     license: Apache-2.0
     license_file: LICENSE.txt
+    dev_url: https://github.com/simbody/simbody
+    doc_url: https://simbody.github.io
     summary: >
         High-performance C++ multibody dynamics/physics library for simulating
         articulated biomechanical and mechanical systems like vehicles, robots,
