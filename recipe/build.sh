@@ -15,6 +15,8 @@ fi
 
 # -LAH prints the values of all CMake variables.
 cmake .. -LAH \
+    -DCMAKE_OSX_SYSROOT=${CONDA_BUILD_SYSROOT} \
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET} \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
     -DCMAKE_BUILD_TYPE="Release" \
