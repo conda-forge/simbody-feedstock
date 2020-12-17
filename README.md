@@ -5,12 +5,14 @@ Home: https://simtk.org/home/simbody
 
 Package license: Apache-2.0
 
-Feedstock license: BSD-3-Clause
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/simbody-feedstock/blob/master/LICENSE.txt)
 
 Summary: High-performance C++ multibody dynamics/physics library for simulating articulated biomechanical and mechanical systems like vehicles, robots, and the human skeleton.
 
 
+Development: https://github.com/simbody/simbody
 
+Documentation: https://simbody.github.io
 
 Current build status
 ====================
