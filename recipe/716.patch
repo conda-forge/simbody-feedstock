@@ -1,0 +1,29 @@
+From 39ec2c2ff71ee9cdf8b684036a57548fb0628f8c Mon Sep 17 00:00:00 2001
+From: Silvio Traversaro <silvio.traversaro@iit.it>
+Date: Mon, 17 May 2021 14:53:03 +0200
+Subject: [PATCH] Do not install dirent.h on Windows to avoid conflicts
+
+---
+ Platform/CMakeLists.txt | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/Platform/CMakeLists.txt b/Platform/CMakeLists.txt
+index 5dfc381d9..99548cb73 100644
+--- a/Platform/CMakeLists.txt
++++ b/Platform/CMakeLists.txt
+@@ -203,15 +203,3 @@ endif()
+ # Copy to parent.
+ set(PLATFORM_INCLUDE_DIRECTORIES "${PLATFORM_INCLUDE_DIRECTORIES}"
+     PARENT_SCOPE)
+-
+-# This needs an outer loop if you add more include directories.
+-file(GLOB INCL_FILES "${PLATFORM_INCLUDE_DIRECTORIES}/*.h")
+-foreach(INCLF ${INCL_FILES})
+-    get_filename_component(INCLF_ROOT ${INCLF} NAME)
+-    install(FILES ${INCLF}
+-    PERMISSIONS OWNER_READ OWNER_WRITE
+-            GROUP_READ GROUP_WRITE
+-                WORLD_READ
+-        DESTINATION include )
+-endforeach()
+-
