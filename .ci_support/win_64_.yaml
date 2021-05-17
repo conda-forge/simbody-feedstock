@@ -7,7 +7,6 @@ channel_targets:
 cxx_compiler:
 - vs2017
 openblas:
-- 0.3.6
-pin_run_as_build:
-  openblas:
-    max_pin: x.x.x
+- 0.3.*
+target_platform:
+- win-64

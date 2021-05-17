@@ -8,9 +8,11 @@ source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
     sha256: d371a92d440991400cb8e8e2473277a75307abb916e5aabc14194bea841b804a
+    patches:
+      - 716.patch
 
 build:
-    number: 1
+    number: 2
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
@@ -58,6 +60,7 @@ requirements:
         - {{ cdt('libxcb') }}                # [linux]
         - {{ cdt('libxau') }}                # [linux]
         - {{ cdt('libxxf86vm') }}            # [linux]
+        - {{ cdt('expat') }}                 # [linux]
     host:
         - openblas  # [win]
         - libblas  # [not win]
@@ -69,7 +72,9 @@ requirements:
         - openblas  # [win]
         - libglu  # [linux]
         - freeglut  # [linux]
-        
+        # Keep compatibility with old versions of simbody that on Windows installed dirent.h 
+        # see https://github.com/conda-forge/simbody-feedstock/issues/39
+        - dirent  # [win]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
@@ -96,6 +101,8 @@ test:
     - if not exist %LIBRARY_BIN%\\SimTKcommon.dll exit 1              # [win]
     - if not exist %LIBRARY_BIN%\\SimTKmath.dll exit 1                # [win]
     - if not exist %LIBRARY_BIN%\\SimTKsimbody.dll exit 1             # [win]
+    # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39
+    - if exist %LIBRARY_INC%\\dirent.h exit 1                    # [win]
   files:
     - test
   requires:
