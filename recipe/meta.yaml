@@ -72,7 +72,9 @@ requirements:
         - openblas  # [win]
         - libglu  # [linux]
         - freeglut  # [linux]
-        
+        # Keep compatibility with old versions of simbody that on Windows installed dirent.h 
+        # see https://github.com/conda-forge/simbody-feedstock/issues/39
+        - dirent  # [win]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
