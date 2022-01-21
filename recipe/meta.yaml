@@ -12,7 +12,7 @@ source:
       - 716.patch
 
 build:
-    number: 2
+    number: 3
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
@@ -30,6 +30,7 @@ requirements:
         # CMake 3.8 provides imported targets for OpenGL.
         - cmake >=3.8
         - ninja  # [win]
+        - make  # [unix]
         - doxygen
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
@@ -107,6 +108,7 @@ test:
     - test
   requires:
     - cmake >=3.8
+    - make  # [unix]
     - ninja  # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
