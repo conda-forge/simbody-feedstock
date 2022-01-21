@@ -108,6 +108,7 @@ test:
     - test
   requires:
     - cmake >=3.8
+    - make  # [unix]
     - ninja  # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
