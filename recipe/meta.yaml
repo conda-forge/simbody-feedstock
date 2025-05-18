@@ -1,23 +1,23 @@
-{% set version = "3.7" %}
+{% set version = "3.8" %}
 
 package:
-    name: simbody
-    version: {{ version }}
+  name: simbody
+  version: {{ version }}
 
 source:
-    fn: Simbody-{{ version }}.tar.gz
-    url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: d371a92d440991400cb8e8e2473277a75307abb916e5aabc14194bea841b804a
-    patches:
-      - 716.patch
+  fn: Simbody-{{ version }}.tar.gz
+  url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
+  sha256: ea71b0206f54a6b4d1714a20e145ba3f39a8298aed1718742b18b6d5ea0261dd
+  patches:
+    - 716.patch
 
 build:
-    number: 3
-    run_exports:
-        - {{ pin_subpackage('simbody', max_pin='x.x') }}
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
-    detect_binary_files_with_prefix: true
+  detect_binary_files_with_prefix: true
 
 # NOTE: This installs Simbody and the optional visualizer on Linux, Windows,
 # and OSX. On Windows, we build against the openblas available in conda-forge,
@@ -26,56 +26,57 @@ build:
 # included with Simbody for Windows and OSX includes a Glut implementation.
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
-    build:
+  build:
         # CMake 3.8 provides imported targets for OpenGL.
-        - cmake >=3.8
-        - ninja  # [win]
-        - make  # [unix]
-        - doxygen
-        - {{ compiler('c') }}
-        - {{ compiler('cxx') }}
-        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-        - {{ cdt('mesa-libgl-devel') }}      # [linux]
-        - {{ cdt('libx11-devel') }}          # [linux]
-        - {{ cdt('libxext-devel') }}         # [linux]
-        - {{ cdt('libxrender-devel') }}      # [linux]
-        - {{ cdt('mesa-libegl-devel') }}     # [linux]
-        - {{ cdt('mesa-dri-drivers') }}      # [linux]
-        - {{ cdt('libxau-devel') }}          # [linux]
-        - {{ cdt('libdrm-devel') }}          # [linux]
-        - {{ cdt('libxcomposite-devel') }}   # [linux]
-        - {{ cdt('libxcursor-devel') }}      # [linux]
-        - {{ cdt('libxi-devel') }}           # [linux]
-        - {{ cdt('libxrandr-devel') }}       # [linux]
-        - {{ cdt('libxscrnsaver-devel') }}   # [linux]
-        - {{ cdt('libxtst-devel') }}         # [linux]
-        - {{ cdt('libselinux-devel') }}      # [linux]
-        - {{ cdt('libxdamage') }}            # [linux]
-        - {{ cdt('libxcb') }}                # [linux]
-        - {{ cdt('libx11-devel') }}          # [linux]
-        - {{ cdt('libxfixes-devel') }}       # [linux]
-        - {{ cdt('libsm-devel') }}           # [linux]
-        - {{ cdt('libice-devel') }}          # [linux]
-        - {{ cdt('libxt') }}                 # [linux]
-        - {{ cdt('libxt-devel') }}           # [linux]
-        - {{ cdt('libxcb') }}                # [linux]
-        - {{ cdt('libxau') }}                # [linux]
-        - {{ cdt('libxxf86vm') }}            # [linux]
-        - {{ cdt('expat') }}                 # [linux]
-    host:
-        - openblas  # [win]
-        - libblas  # [not win]
-        - liblapack  # [not win]
-        - libglu  # [linux]
-        - freeglut  # [linux]
-        - xorg-libxmu  # [linux]
-    run:
-        - openblas  # [win]
-        - libglu  # [linux]
-        - freeglut  # [linux]
+    - cmake >=3.8
+    - ninja      # [win]
+    - make      # [unix]
+    - doxygen
+    - {{ compiler('c') }}
+    - {{ stdlib("c") }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('xorg-x11-proto-devel') }}      # [linux]
+    - {{ cdt('mesa-libgl-devel') }}          # [linux]
+    - {{ cdt('libx11-devel') }}              # [linux]
+    - {{ cdt('libxext-devel') }}             # [linux]
+    - {{ cdt('libxrender-devel') }}          # [linux]
+    - {{ cdt('mesa-libegl-devel') }}         # [linux]
+    - {{ cdt('mesa-dri-drivers') }}          # [linux]
+    - {{ cdt('libxau-devel') }}              # [linux]
+    - {{ cdt('libdrm-devel') }}              # [linux]
+    - {{ cdt('libxcomposite-devel') }}       # [linux]
+    - {{ cdt('libxcursor-devel') }}          # [linux]
+    - {{ cdt('libxi-devel') }}               # [linux]
+    - {{ cdt('libxrandr-devel') }}           # [linux]
+    - {{ cdt('libxscrnsaver-devel') }}       # [linux]
+    - {{ cdt('libxtst-devel') }}             # [linux]
+    - {{ cdt('libselinux-devel') }}          # [linux]
+    - {{ cdt('libxdamage') }}                # [linux]
+    - {{ cdt('libxcb') }}                    # [linux]
+    - {{ cdt('libx11-devel') }}              # [linux]
+    - {{ cdt('libxfixes-devel') }}           # [linux]
+    - {{ cdt('libsm-devel') }}               # [linux]
+    - {{ cdt('libice-devel') }}              # [linux]
+    - {{ cdt('libxt') }}                     # [linux]
+    - {{ cdt('libxt-devel') }}               # [linux]
+    - {{ cdt('libxcb') }}                    # [linux]
+    - {{ cdt('libxau') }}                    # [linux]
+    - {{ cdt('libxxf86vm') }}                # [linux]
+    - {{ cdt('expat') }}                     # [linux]
+  host:
+    - openblas      # [win]
+    - libblas      # [not win]
+    - liblapack      # [not win]
+    - libglu      # [linux]
+    - freeglut      # [linux]
+    - xorg-libxmu      # [linux]
+  run:
+    - openblas      # [win]
+    - libglu      # [linux]
+    - freeglut      # [linux]
         # Keep compatibility with old versions of simbody that on Windows installed dirent.h 
         # see https://github.com/conda-forge/simbody-feedstock/issues/39
-        - dirent  # [win]
+    - dirent      # [win]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
@@ -114,17 +115,15 @@ test:
     - {{ compiler('cxx') }}
 
 about:
-    home: https://simtk.org/home/simbody
-    license: Apache-2.0
-    license_file: LICENSE.txt
-    dev_url: https://github.com/simbody/simbody
-    doc_url: https://simbody.github.io
-    summary: >
-        High-performance C++ multibody dynamics/physics library for simulating
-        articulated biomechanical and mechanical systems like vehicles, robots,
-        and the human skeleton.
+  home: https://simtk.org/home/simbody
+  license: Apache-2.0
+  license_file: LICENSE.txt
+  dev_url: https://github.com/simbody/simbody
+  doc_url: https://simbody.github.io
+  summary: >
+    High-performance C++ multibody dynamics/physics library for simulating articulated biomechanical and mechanical systems like vehicles, robots, and the human skeleton.
 
 extra:
-    recipe-maintainers:
-        - moorepants
-        - chrisdembia
+  recipe-maintainers:
+    - moorepants
+    - chrisdembia
