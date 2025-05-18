@@ -1,11 +1,13 @@
 c_compiler:
-- vs2017
+- vs2019
+c_stdlib:
+- vs
 channel_sources:
 - conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
-- vs2017
+- vs2019
 openblas:
 - 0.3.*
 target_platform:
