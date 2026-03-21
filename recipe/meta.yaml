@@ -34,6 +34,7 @@ requirements:
     - doxygen
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - {{ stdlib{"c") }}
   host:
     - openblas      # [win]
     - libblas      # [not win]
