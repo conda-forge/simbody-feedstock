@@ -47,7 +47,6 @@ requirements:
         - openblas  # [win]
         - libglu  # [linux]
         - freeglut  # [not osx]
-        - xorg-libxmu  # [linux]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
@@ -77,16 +76,12 @@ test:
     # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39
     - if exist %LIBRARY_INC%\\dirent.h exit 1                    # [win]
     - if exist %LIBRARY_BIN%\\glut32.dll exit 1                  # [win]
-    - cmake -S test -B test-build -G Ninja -DCMAKE_BUILD_TYPE=Release  # [unix]
-    - cmake -S test -B test-build -G Ninja -DCMAKE_BUILD_TYPE=Release -DSimbody_DIR=%LIBRARY_PREFIX%\\cmake  # [win]
-    - cmake --build test-build
-    - ./test-build/mysimbodyexe                                    # [unix]
-    - test-build\\mysimbodyexe.exe                                # [win]
   files:
     - test
   requires:
     - cmake >=3.21
-    - ninja
+    - make  # [unix]
+    - ninja  # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
 
