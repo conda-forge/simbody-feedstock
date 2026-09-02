@@ -126,5 +126,6 @@ about:
 
 extra:
     recipe-maintainers:
+        - jeongseok-meta
         - moorepants
         - chrisdembia
