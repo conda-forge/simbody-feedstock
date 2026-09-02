@@ -13,6 +13,8 @@ source:
       - 0001-use-system-freeglut-on-windows.patch
       # Use conda-forge's lodepng instead of the bundled 2010 snapshot.
       - 0002-use-system-lodepng.patch
+      # Fix the installed pkg-config version and Windows BLAS link flags.
+      - 0003-fix-pkg-config-metadata.patch
 
 build:
     number: 0
@@ -89,12 +91,17 @@ test:
     # Unix targets may export portable BLAS::BLAS/LAPACK::LAPACK names, but
     # must not hard-code a provider or library path.
     - if grep -E '(lib(open)?blas|liblapack|libblis|openblas)' $PREFIX/lib/cmake/simbody/SimbodyTargets.cmake; then exit 1; fi  # [unix]
+    - pkg-config --atleast-version=3.8 simbody
+    - findstr /c:"-lopenblas" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul || exit /b 1  # [win]
+    - findstr /c:"-lliblapack" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul && exit /b 1 || ver >nul  # [win]
+    - findstr /c:"-llibblas" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul && exit /b 1 || ver >nul  # [win]
   files:
     - test
   requires:
     - cmake >=3.21
     - make  # [unix]
     - ninja  # [win]
+    - pkg-config
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
 

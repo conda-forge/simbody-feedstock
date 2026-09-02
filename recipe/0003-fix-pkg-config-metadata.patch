@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: conda-forge <conda-forge@users.noreply.github.com>
+Date: Wed, 2 Sep 2026 00:00:00 +0000
+Subject: [PATCH] Fix pkg-config metadata
+
+Use the CMake project version in the pkg-config file and advertise the
+external OpenBLAS library used by conda-forge Windows builds.
+---
+ CMakeLists.txt                    | 5 ++++-
+ cmake/pkgconfig/simbody.pc.in     | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bd0dcaa..81e8d86 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -641,7 +641,10 @@ install(FILES ${CMAKE_SOURCE_DIR}/cmake/SampleCMakeLists.txt
+         DESTINATION ${SIMBODY_CMAKE_DIR})
+ 
+ # Make the pkgconfig file: select the proper flags depending on the platform
+-if(WIN32)
++if(WIN32 AND WINDOWS_USE_EXTERNAL_LIBS)
++    # The conda-forge build links the external OpenBLAS import library.
++    set(PKGCONFIG_PLATFORM_LIBS "-lopenblas")
++elseif(WIN32)
+     set(PKGCONFIG_PLATFORM_LIBS "-lliblapack -llibblas")
+ elseif(APPLE)
+     set(PKGCONFIG_PLATFORM_LIBS     "-llapack -lblas -ldl")
+diff --git a/cmake/pkgconfig/simbody.pc.in b/cmake/pkgconfig/simbody.pc.in
+index c9d8506..db92b70 100644
+--- a/cmake/pkgconfig/simbody.pc.in
++++ b/cmake/pkgconfig/simbody.pc.in
+@@ -4,7 +4,7 @@ includedir=${prefix}/@SIMBODY_INCLUDE_INSTALL_DIR@
+ 
+ Name: simbody
+ Description: Simbody Libraries
+-Version: @SIMBODY_VERSION@
++Version: @Simbody_VERSION@
+ Requires:
+ Libs: -L${libdir} -lSimTKsimbody -lSimTKmath -lSimTKcommon @PKGCONFIG_PLATFORM_LIBS@
+ CFlags: -I${includedir} -std=c++11
+-- 
+2.51.0
