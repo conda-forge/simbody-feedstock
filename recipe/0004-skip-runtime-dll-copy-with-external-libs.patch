@@ -1,0 +1,33 @@
+diff --git a/SimTKcommon/CMakeLists.txt b/SimTKcommon/CMakeLists.txt
+index 6a6d774..f1eff58 100644
+--- a/SimTKcommon/CMakeLists.txt
++++ b/SimTKcommon/CMakeLists.txt
+@@ -151,8 +151,10 @@ target_compile_features(SimTKcommon PUBLIC cxx_std_11)
+ target_compile_options(SimTKcommon INTERFACE
+     "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/wd4996>")
+ 
+-# "$<TARGET_RUNTIME_DLLS:SimTKcommon>" is empty on non-DLL platforms, and the copy command fails with only 1 argument
+-if(BUILD_SHARED_LIBS AND WIN32)
++# "$<TARGET_RUNTIME_DLLS:SimTKcommon>" is empty on non-DLL platforms, and the copy command fails with only 1 argument.
++# External packages supply their DLLs on PATH and may be represented by plain
++# library names, which also leaves TARGET_RUNTIME_DLLS empty.
++if(BUILD_SHARED_LIBS AND WIN32 AND NOT WINDOWS_USE_EXTERNAL_LIBS)
+     # Copy third-party libs (e.g. vendors BLAS/LAPACK) to the build directory; only valid for shared libraries
+     add_custom_command(TARGET SimTKcommon PRE_BUILD
+         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:SimTKcommon> $<TARGET_FILE_DIR:SimTKcommon>
+diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+index 0082969..7e207ec 100644
+--- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
++++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+@@ -66,8 +66,9 @@ else()
+             PROJECT_LABEL "Code - simbody-visualizer"
+             DEBUG_OUTPUT_NAME simbody-visualizer${CMAKE_DEBUG_POSTFIX})
+ 
+-    # "$<TARGET_RUNTIME_DLLS:SimTKcommon>" is empty on non-DLL platforms, and the copy command fails with only 1 argument
+-    if(WIN32)
++    # External packages supply their DLLs on PATH and may not be CMake targets,
++    # which leaves TARGET_RUNTIME_DLLS empty.
++    if(WIN32 AND NOT WINDOWS_USE_EXTERNAL_LIBS)
+         # Copy third-party libs (e.g. vendored GLUT) to the build directory
+         add_custom_command(TARGET simbody-visualizer PRE_BUILD
+             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:simbody-visualizer> $<TARGET_FILE_DIR:simbody-visualizer>

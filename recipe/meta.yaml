@@ -15,6 +15,8 @@ source:
       - 0002-use-system-lodepng.patch
       # Fix the installed pkg-config version and Windows BLAS link flags.
       - 0003-fix-pkg-config-metadata.patch
+      # Conda supplies external Windows DLLs on PATH, so do not copy target DLLs.
+      - 0004-skip-runtime-dll-copy-with-external-libs.patch
 
 build:
     number: 0
