@@ -10,7 +10,7 @@ prebuilt GLUT binaries bundled in the Simbody source archive.
  1 file changed, 5 insertions(+), 33 deletions(-)
 
 diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
-index b34b00e..59d508c 100644
+index 808b149..932be20 100644
 --- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 +++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 @@ -1,32 +1,19 @@
