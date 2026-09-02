@@ -7,7 +7,8 @@ Conda-forge provides FreeGLUT on Windows, so do not link or install the
 prebuilt GLUT binaries bundled in the Simbody source archive.
 ---
  Simbody/Visualizer/simbody-visualizer/CMakeLists.txt | 38 +++-----------------
- 1 file changed, 5 insertions(+), 33 deletions(-)
+ .../simbody-visualizer/simbody-visualizer.cpp       |  2 +-
+ 2 files changed, 6 insertions(+), 34 deletions(-)
 
 diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 index 808b149..932be20 100644
@@ -79,5 +80,19 @@ index 808b149..932be20 100644
 -    endif()
 -
  endif()
+diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+index 12f6a1e..c666732 100644
+--- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
++++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+@@ -52,8 +52,8 @@
+     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+     #include <GLUT/glut.h>
+ #elif defined(_WIN32)
+-    #include "glut32/glut.h"    // we have our own private headers
++    #include <GL/glut.h>         // provided by conda-forge FreeGLUT
+     #include "glut32/glext.h"
+ 
+     // A Windows-only extension for disabling vsync, allowing unreasonably
+     // high frame rates.
 -- 
 2.51.0
