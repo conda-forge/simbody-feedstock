@@ -5,6 +5,16 @@ using namespace SimTK;
 
 int main() {
     try {
+        // Simbody's public inline matrix API calls LAPACK directly. Keep this
+        // here so the exported CMake target must propagate BLAS/LAPACK.
+        double value = 1.0;
+        int pivot = 0;
+        int info = 0;
+        Lapack::getrf<double>(1, 1, &value, 1, &pivot, info);
+        if (info != 0 || pivot != 1) {
+            return 1;
+        }
+
         MultibodySystem system;
         SimbodyMatterSubsystem matter(system);
         GeneralForceSubsystem forces(system);

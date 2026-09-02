@@ -1,0 +1,63 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: conda-forge <conda-forge@users.noreply.github.com>
+Date: Wed, 2 Sep 2026 00:00:00 +0000
+Subject: [PATCH] Use packaged LodePNG
+
+Use conda-forge's shared LodePNG library rather than compiling the old
+vendored 2010 snapshot into the visualizer executable.
+---
+ Simbody/Visualizer/simbody-visualizer/CMakeLists.txt | 9 ++++++---
+ .../simbody-visualizer/simbody-visualizer.cpp        | 5 +++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+index 932be20..0082969 100644
+--- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
++++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+@@ -5,6 +5,8 @@
+ 
+ set(MISSING_DEPENDENCIES "")
+ 
++find_package(lodepng CONFIG REQUIRED)
++
+ set(OpenGL_GL_PREFERENCE LEGACY)
+ find_package(OpenGL)
+ if (NOT OPENGL_FOUND)
+@@ -46,9 +48,10 @@ if(MISSING_DEPENDENCIES)
+ if(MISSING_DEPENDENCIES)
+     message(WARNING "Visualizer will not be built because some of its dependencies (${MISSING_DEPENDENCIES}) are missing")
+ else()
+-    add_executable(simbody-visualizer MACOSX_BUNDLE simbody-visualizer.cpp lodepng.cpp lodepng.h)
++    add_executable(simbody-visualizer MACOSX_BUNDLE simbody-visualizer.cpp)
+ 
+-    target_link_libraries(simbody-visualizer PUBLIC SimTKsimbody ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
++    target_link_libraries(simbody-visualizer PUBLIC
++        SimTKsimbody lodepng ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+ 
+     target_include_directories(simbody-visualizer
+         PRIVATE
+diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+index 12f6a1e..8bec62e 100644
+--- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
++++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+@@ -25,7 +25,7 @@
+ #include "simbody/internal/Visualizer.h"
+ #include "simbody/internal/Visualizer_InputListener.h"
+ #include "../src/VisualizerProtocol.h"
+-#include "lodepng.h"
++#include <lodepng.h>
+ 
+ #include <cstdlib>
+ #include <cmath>
+@@ -1951,7 +1951,8 @@ public:
+                 data[base2+i] = temp;
+             }
+         }
+-        LodePNG::encode(filename, data.empty() ? 0 : &data[0], width, height, 2, 8);
++        lodepng::encode(filename, data.empty() ? 0 : &data[0], width, height,
++                        LCT_RGB, 8);
+     }
+ private:
+     string filename;
+-- 
+2.51.0

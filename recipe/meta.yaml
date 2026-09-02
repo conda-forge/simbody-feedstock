@@ -11,15 +11,18 @@ source:
     patches:
       # Use conda-forge's freeglut instead of the bundled Windows binaries.
       - 0001-use-system-freeglut-on-windows.patch
+      # Use conda-forge's lodepng instead of the bundled 2010 snapshot.
+      - 0002-use-system-lodepng.patch
 
 build:
     number: 0
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
-    # Xmu is needed only for CMake's Linux GLUT feature check; Simbody does
-    # not link against it.
+    # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
+    # Simbody does not link against them directly.
     ignore_run_exports:
         - xorg-libxmu  # [linux]
+        - xorg-libxi  # [linux]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
@@ -47,6 +50,8 @@ requirements:
         - libglu  # [linux]
         - freeglut  # [not osx]
         - xorg-libxmu  # [linux]
+        - xorg-libxi  # [linux]
+        - lodepng
     run:
         - openblas  # [win]
         - libglu  # [linux]
@@ -80,6 +85,12 @@ test:
     # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39
     - if exist %LIBRARY_INC%\\dirent.h exit 1                    # [win]
     - if exist %LIBRARY_BIN%\\glut32.dll exit 1                  # [win]
+    # Installed CMake metadata must not retain a conda-build prefix.
+    - if grep -R -E '(_h_env_|conda-bld)' $PREFIX/lib/cmake/simbody; then exit 1; fi  # [unix]
+    - findstr /s /m /c:"_h_env_" /c:"conda-bld" "%LIBRARY_PREFIX%\lib\cmake\simbody\*" >nul && exit /b 1 || ver >nul  # [win]
+    # Unix targets may export portable BLAS::BLAS/LAPACK::LAPACK names, but
+    # must not hard-code a provider or library path.
+    - if grep -E '(lib(open)?blas|liblapack|libblis|openblas)' $PREFIX/lib/cmake/simbody/SimbodyTargets.cmake; then exit 1; fi  # [unix]
   files:
     - test
   requires:
@@ -91,8 +102,17 @@ test:
 
 about:
     home: https://simtk.org/home/simbody
-    license: Apache-2.0
-    license_file: LICENSE.txt
+    license: Apache-2.0 AND BSD-3-Clause AND EPL-1.0 AND Zlib
+    license_file:
+        - LICENSE.txt
+        - SimTKcommon/Random/etc/LICENSE.txt
+        - SimTKmath/Integrators/src/CPodes/sundials/LICENSE.txt
+        - SimTKmath/Integrators/src/CPodes/sundials/src/cpodes/LICENSE.txt
+        - SimTKmath/Optimizers/src/IpOpt/LICENSE.txt
+        - SimTKmath/Optimizers/src/c-cmaes/LICENSE
+        - SimTKmath/Optimizers/src/c-cmaes/simmath_license_note.txt
+        # Includes the embedded TinyXML Zlib license notice.
+        - doc/debian/copyright
     dev_url: https://github.com/simbody/simbody
     doc_url: https://simbody.github.io
     summary: >

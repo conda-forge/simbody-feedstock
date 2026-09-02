@@ -17,8 +17,7 @@ fi
 cmake ${CMAKE_ARGS} .. -LAH \
     -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_INSTALL_LIBDIR="lib" \
-    -DCMAKE_BUILD_TYPE="Release" \
-    -DBUILD_USING_OTHER_LAPACK="$PREFIX/lib/libblas${SHLIB_EXT};$PREFIX/lib/liblapack${SHLIB_EXT}"
+    -DCMAKE_BUILD_TYPE="Release"
 
 if [[ "$CONDA_BUILD_CROSS_COMPILATION" != "1" ]]; then
   make doxygen
