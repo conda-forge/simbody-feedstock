@@ -54,8 +54,6 @@ requirements:
         - lodepng
     run:
         - openblas  # [win]
-        - libglu  # [linux]
-        - freeglut  # [not osx]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
