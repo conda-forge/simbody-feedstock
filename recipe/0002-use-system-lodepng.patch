@@ -37,7 +37,7 @@ index 932be20..0082969 100644
      target_include_directories(simbody-visualizer
          PRIVATE
 diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
-index c666732..34ab9b0 100644
+index 0f38bb6..0d040c1 100644
 --- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
 +++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
 @@ -25,7 +25,7 @@

@@ -7,8 +7,8 @@ Conda-forge provides FreeGLUT on Windows, so do not link or install the
 prebuilt GLUT binaries bundled in the Simbody source archive.
 ---
  Simbody/Visualizer/simbody-visualizer/CMakeLists.txt | 38 +++-----------------
- .../simbody-visualizer/simbody-visualizer.cpp       |  2 +-
- 2 files changed, 6 insertions(+), 34 deletions(-)
+ .../simbody-visualizer/simbody-visualizer.cpp       |  7 ++++---
+ 2 files changed, 9 insertions(+), 36 deletions(-)
 
 diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 index 808b149..932be20 100644
@@ -81,18 +81,32 @@ index 808b149..932be20 100644
 -
  endif()
 diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
-index 12f6a1e..c666732 100644
+index 12f6a1e..0f38bb6 100644
 --- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
 +++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
-@@ -52,8 +52,8 @@
+@@ -52,12 +52,13 @@
      #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
      #include <GLUT/glut.h>
  #elif defined(_WIN32)
 -    #include "glut32/glut.h"    // we have our own private headers
-+    #include <GL/glut.h>         // provided by conda-forge FreeGLUT
++    #include <GL/freeglut.h>     // provided by conda-forge FreeGLUT
      #include "glut32/glext.h"
  
      // A Windows-only extension for disabling vsync, allowing unreasonably
      // high frame rates.
+-    PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
++    using WglSwapIntervalProc = BOOL (APIENTRY *)(int);
++    WglSwapIntervalProc wglSwapIntervalEXT;
+ 
+     // These will hold the dynamically-determined function addresses.
+ 
+@@ -2919,6 +2920,6 @@ static bool initGlextFuncPointersIfNeeded(bool& glCanSaveImages) {
+     glCanSaveImages = true;
+ #ifdef _WIN32
+-    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress( "wglSwapIntervalEXT" );
++    wglSwapIntervalEXT = (WglSwapIntervalProc)wglGetProcAddress( "wglSwapIntervalEXT" );
+ 
+     // These are necessary for basic functioning.
+     glGenBuffers    = (PFNGLGENBUFFERSPROC) glutGetProcAddress("glGenBuffers");
 -- 
 2.51.0
