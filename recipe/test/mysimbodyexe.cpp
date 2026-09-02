@@ -14,6 +14,15 @@ int main() {
 		    body, Transform(Vec3(0, 1, 0)));
         system.realizeTopology();
         State state = system.getDefaultState();
+        Array_<ForceIndex> noForces;
+        Vector_<SpatialVec> bodyForces;
+        Vector mobilityForces;
+        forces.calcForceContributionsSum(
+                state, noForces, bodyForces, mobilityForces);
+        if (bodyForces.size() != matter.getNumBodies() ||
+                mobilityForces.size() != matter.getNumMobilities()) {
+            return 1;
+        }
         pendulum.setOneU(state, 0, 1.0);
         RungeKuttaMersonIntegrator integ(system);
         TimeStepper stepper(system, integ);
