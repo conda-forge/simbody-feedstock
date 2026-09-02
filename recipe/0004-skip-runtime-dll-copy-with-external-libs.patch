@@ -1,5 +1,5 @@
 diff --git a/SimTKcommon/CMakeLists.txt b/SimTKcommon/CMakeLists.txt
-index 6a6d774..f1eff58 100644
+index 6a6d774..b81f940 100644
 --- a/SimTKcommon/CMakeLists.txt
 +++ b/SimTKcommon/CMakeLists.txt
 @@ -151,8 +151,10 @@ target_compile_features(SimTKcommon PUBLIC cxx_std_11)
@@ -15,6 +15,15 @@ index 6a6d774..f1eff58 100644
      # Copy third-party libs (e.g. vendors BLAS/LAPACK) to the build directory; only valid for shared libraries
      add_custom_command(TARGET SimTKcommon PRE_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:SimTKcommon> $<TARGET_FILE_DIR:SimTKcommon>
+@@ -175,7 +177,7 @@ install(TARGETS SimTKcommon EXPORT SimbodyTargets
+         PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ
+         DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ 
+-if(WIN32)
++if(WIN32 AND NOT WINDOWS_USE_EXTERNAL_LIBS)
+     # This will only run on Windows, so no need to specify permissions
+     install(IMPORTED_RUNTIME_ARTIFACTS SimTKcommon
+         RUNTIME_DEPENDENCY_SET vendored-dlls
 diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
 index 0082969..7e207ec 100644
 --- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
