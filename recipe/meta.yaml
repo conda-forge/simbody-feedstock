@@ -87,8 +87,10 @@ test:
     - if not exist %LIBRARY_BIN%\\SimTKcommon.dll exit 1              # [win]
     - if not exist %LIBRARY_BIN%\\SimTKmath.dll exit 1                # [win]
     - if not exist %LIBRARY_BIN%\\SimTKsimbody.dll exit 1             # [win]
-    # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39
-    - if exist %LIBRARY_INC%\\dirent.h exit 1                    # [win]
+    # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39.
+    # Check Simbody's own file list because the runtime dirent package provides
+    # the replacement header in the combined test environment.
+    - findstr /i /c:"Library/include/dirent.h" "%PREFIX%\\conda-meta\\simbody-{{ version }}-*.json" >nul && exit /b 1 || ver >nul  # [win]
     - if exist %LIBRARY_BIN%\\glut32.dll exit 1                  # [win]
     # Installed CMake metadata must not retain a conda-build prefix.
     - if grep -R -E '(_h_env_|conda-bld)' $PREFIX/lib/cmake/simbody; then exit 1; fi  # [unix]
