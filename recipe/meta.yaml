@@ -58,6 +58,9 @@ requirements:
         - lodepng
     run:
         - openblas  # [win]
+        # Keep downstreams compatible after removing Simbody's vendored dirent.h.
+        # See https://github.com/conda-forge/simbody-feedstock/issues/39.
+        - dirent  # [win]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
@@ -109,6 +112,8 @@ test:
 
 about:
     home: https://simtk.org/home/simbody
+    # Embedded IpOpt remains EPL-1.0; SFMT/CPodes and TinyXML retain
+    # their BSD-3-Clause and Zlib terms, respectively.
     license: Apache-2.0 AND BSD-3-Clause AND EPL-1.0 AND Zlib
     license_file:
         - LICENSE.txt

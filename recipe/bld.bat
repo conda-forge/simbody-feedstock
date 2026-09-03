@@ -6,6 +6,7 @@ del /f Platform\Windows\lib_x64\*.lib
 mkdir build
 cd build
 REM -LAH prints the values of all CMake variables.
+REM A bare BLAS library name keeps installed CMake metadata relocatable.
 cmake -G Ninja .. -LAH ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_INSTALL_PREFIX="%LIBRARY_PREFIX%" ^
