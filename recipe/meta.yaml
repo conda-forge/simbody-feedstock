@@ -114,10 +114,9 @@ test:
 
 about:
     home: https://simtk.org/home/simbody
-    # Embedded IpOpt remains EPL-1.0; SFMT/CPodes and TinyXML retain
-    # their BSD-3-Clause and Zlib terms, respectively.
-    license: Apache-2.0 AND BSD-3-Clause AND EPL-1.0 AND Zlib
+    license: Apache-2.0
     license_file:
+        # Retain the notices for third-party sources embedded in Simbody.
         - LICENSE.txt
         - SimTKcommon/Random/etc/LICENSE.txt
         - SimTKmath/Integrators/src/CPodes/sundials/LICENSE.txt
