@@ -1,0 +1,112 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: conda-forge <conda-forge@users.noreply.github.com>
+Date: Wed, 2 Sep 2026 00:00:00 +0000
+Subject: [PATCH] Use system FreeGLUT on Windows
+
+Conda-forge provides FreeGLUT on Windows, so do not link or install the
+prebuilt GLUT binaries bundled in the Simbody source archive.
+---
+ Simbody/Visualizer/simbody-visualizer/CMakeLists.txt | 38 +++-----------------
+ .../simbody-visualizer/simbody-visualizer.cpp       |  7 ++++---
+ 2 files changed, 9 insertions(+), 36 deletions(-)
+
+diff --git a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+index 808b149..932be20 100644
+--- a/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
++++ b/Simbody/Visualizer/simbody-visualizer/CMakeLists.txt
+@@ -1,32 +1,19 @@
+ # Generate the visualizer application and deal with its dependencies
+-# on OpenGL and glut. On Windows we're going to install our own glut; for
+-# other platforms we depend on their already being a glut (or freeglut)
++# on OpenGL and GLUT. On Windows use a packaged FreeGLUT; on other platforms
++# depend on an installed GLUT (or FreeGLUT)
+ # available.
+ 
+ set(MISSING_DEPENDENCIES "")
+ 
+ set(OpenGL_GL_PREFERENCE LEGACY)
+ find_package(OpenGL)
+ if (NOT OPENGL_FOUND)
+     list(APPEND MISSING_DEPENDENCIES OpenGL)
+ endif()
+ 
+ if(WIN32)
+-    set(glut32dir "${CMAKE_CURRENT_SOURCE_DIR}/glut32")
+-    set(GLUT32_HEADERS "${glut32dir}/glut.h" "${glut32dir}/glext.h")
+-    if(${PLATFORM_ABI} MATCHES "x64")
+-        set(glut32libdir "${glut32dir}/lib64")
+-    else()
+-        set(glut32libdir "${glut32dir}/lib")
+-    endif()
+-
+-    add_library(glut32 SHARED IMPORTED)
+-    set_target_properties(glut32 PROPERTIES
+-        IMPORTED_IMPLIB "${glut32libdir}/glut32.lib"
+-        IMPORTED_LOCATION "${glut32libdir}/glut32.dll"
+-        )
+-
+-    set(GLUT_LIBRARIES glut32)
++    find_package(FreeGLUT CONFIG REQUIRED)
++    set(GLUT_LIBRARIES FreeGLUT::freeglut)
+     set(SIMBODY_HAS_GLUT TRUE)
+ else()
+     find_package(GLUT) # sets GLUT_LIBRARIES
+@@ -59,9 +46,7 @@ if(MISSING_DEPENDENCIES)
+ if(MISSING_DEPENDENCIES)
+     message(WARNING "Visualizer will not be built because some of its dependencies (${MISSING_DEPENDENCIES}) are missing")
+ else()
+-    add_executable(simbody-visualizer MACOSX_BUNDLE
+-        simbody-visualizer.cpp lodepng.cpp lodepng.h
+-        ${GLUT32_HEADERS}) # only on Windows
++    add_executable(simbody-visualizer MACOSX_BUNDLE simbody-visualizer.cpp lodepng.cpp lodepng.h)
+ 
+     target_link_libraries(simbody-visualizer PUBLIC SimTKsimbody ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+ 
+@@ -123,17 +108,4 @@ else()
+                                 WORLD_READ WORLD_EXECUTE
+             DESTINATION ${SIMBODY_VISUALIZER_INSTALL_DIR})
+ 
+-    if(WIN32)
+-        # on Windows we also have to copy and later install the glut32.dll
+-        # no need to specify permissions on Windows
+-        install(IMPORTED_RUNTIME_ARTIFACTS simbody-visualizer
+-            RUNTIME_DEPENDENCY_SET glut-vendored-dlls
+-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+-        install(RUNTIME_DEPENDENCY_SET glut-vendored-dlls
+-            PRE_EXCLUDE_REGEXES "^(api|ext)-ms"
+-            POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
+-            )
+-    endif()
+-
+ endif()
+diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+index 12f6a1e..0f38bb6 100644
+--- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
++++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+@@ -52,12 +52,13 @@
+     #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+     #include <GLUT/glut.h>
+ #elif defined(_WIN32)
+-    #include "glut32/glut.h"    // we have our own private headers
++    #include <GL/freeglut.h>     // provided by conda-forge FreeGLUT
+     #include "glut32/glext.h"
+ 
+     // A Windows-only extension for disabling vsync, allowing unreasonably
+     // high frame rates.
+-    PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT;
++    using WglSwapIntervalProc = BOOL (APIENTRY *)(int);
++    WglSwapIntervalProc wglSwapIntervalEXT;
+ 
+     // These will hold the dynamically-determined function addresses.
+ 
+@@ -2919,6 +2920,6 @@ static bool initGlextFuncPointersIfNeeded(bool& glCanSaveImages) {
+     glCanSaveImages = true;
+ #ifdef _WIN32
+-    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress( "wglSwapIntervalEXT" );
++    wglSwapIntervalEXT = (WglSwapIntervalProc)wglGetProcAddress( "wglSwapIntervalEXT" );
+ 
+     // These are necessary for basic functioning.
+     glGenBuffers    = (PFNGLGENBUFFERSPROC) glutGetProcAddress("glGenBuffers");
+-- 
+2.51.0

@@ -1,20 +1,32 @@
-{% set version = "3.7" %}
+{% set version = "3.8" %}
 
 package:
     name: simbody
-    version: {{ version }}
+    version: "{{ version }}"
 
 source:
     fn: Simbody-{{ version }}.tar.gz
     url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: d371a92d440991400cb8e8e2473277a75307abb916e5aabc14194bea841b804a
+    sha256: ea71b0206f54a6b4d1714a20e145ba3f39a8298aed1718742b18b6d5ea0261dd
     patches:
-      - 716.patch
+      # Use conda-forge's freeglut instead of the bundled Windows binaries.
+      - 0001-use-system-freeglut-on-windows.patch
+      # Use conda-forge's lodepng instead of the bundled 2010 snapshot.
+      - 0002-use-system-lodepng.patch
+      # Fix the installed pkg-config version and Windows BLAS link flags.
+      - 0003-fix-pkg-config-metadata.patch
+      # Conda supplies external Windows DLLs on PATH, so do not copy target DLLs.
+      - 0004-skip-runtime-dll-copy-with-external-libs.patch
 
 build:
-    number: 3
+    number: 0
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
+    # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
+    # Simbody does not link against them directly.
+    ignore_run_exports:
+        - xorg-libxmu  # [linux]
+        - xorg-libxi  # [linux]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
     detect_binary_files_with_prefix: true
@@ -22,59 +34,32 @@ build:
 # NOTE: This installs Simbody and the optional visualizer on Linux, Windows,
 # and OSX. On Windows, we build against the openblas available in conda-forge,
 # which includes lapack, because the other blas/lapack packages do not provide
-# import libraries (*.lib). We only depend on Glut on Linux, because Glut is
-# included with Simbody for Windows and OSX includes a Glut implementation.
+# import libraries (*.lib). We use conda-forge's FreeGLUT on Linux and Windows;
+# macOS provides a GLUT framework.
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
     build:
-        # CMake 3.8 provides imported targets for OpenGL.
-        - cmake >=3.8
+        - cmake >=3.21
         - ninja  # [win]
         - make  # [unix]
         - doxygen
         - {{ compiler('c') }}
+        - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
-        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
-        - {{ cdt('mesa-libgl-devel') }}      # [linux]
-        - {{ cdt('libx11-devel') }}          # [linux]
-        - {{ cdt('libxext-devel') }}         # [linux]
-        - {{ cdt('libxrender-devel') }}      # [linux]
-        - {{ cdt('mesa-libegl-devel') }}     # [linux]
-        - {{ cdt('mesa-dri-drivers') }}      # [linux]
-        - {{ cdt('libxau-devel') }}          # [linux]
-        - {{ cdt('libdrm-devel') }}          # [linux]
-        - {{ cdt('libxcomposite-devel') }}   # [linux]
-        - {{ cdt('libxcursor-devel') }}      # [linux]
-        - {{ cdt('libxi-devel') }}           # [linux]
-        - {{ cdt('libxrandr-devel') }}       # [linux]
-        - {{ cdt('libxscrnsaver-devel') }}   # [linux]
-        - {{ cdt('libxtst-devel') }}         # [linux]
-        - {{ cdt('libselinux-devel') }}      # [linux]
-        - {{ cdt('libxdamage') }}            # [linux]
-        - {{ cdt('libxcb') }}                # [linux]
-        - {{ cdt('libx11-devel') }}          # [linux]
-        - {{ cdt('libxfixes-devel') }}       # [linux]
-        - {{ cdt('libsm-devel') }}           # [linux]
-        - {{ cdt('libice-devel') }}          # [linux]
-        - {{ cdt('libxt') }}                 # [linux]
-        - {{ cdt('libxt-devel') }}           # [linux]
-        - {{ cdt('libxcb') }}                # [linux]
-        - {{ cdt('libxau') }}                # [linux]
-        - {{ cdt('libxxf86vm') }}            # [linux]
-        - {{ cdt('expat') }}                 # [linux]
     host:
         - openblas  # [win]
         - libblas  # [not win]
         - liblapack  # [not win]
+        - libgl-devel  # [linux]
         - libglu  # [linux]
-        - freeglut  # [linux]
+        - freeglut  # [not osx]
         - xorg-libxmu  # [linux]
+        - xorg-libxi  # [linux]
+        - lodepng
     run:
         - openblas  # [win]
-        - libglu  # [linux]
-        - freeglut  # [linux]
-        # Keep compatibility with old versions of simbody that on Windows installed dirent.h 
-        # see https://github.com/conda-forge/simbody-feedstock/issues/39
+        # Keep downstreams compatible after removing Simbody's vendored dirent.h.
+        # See https://github.com/conda-forge/simbody-feedstock/issues/39.
         - dirent  # [win]
 test:
   commands:
@@ -102,21 +87,45 @@ test:
     - if not exist %LIBRARY_BIN%\\SimTKcommon.dll exit 1              # [win]
     - if not exist %LIBRARY_BIN%\\SimTKmath.dll exit 1                # [win]
     - if not exist %LIBRARY_BIN%\\SimTKsimbody.dll exit 1             # [win]
-    # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39
-    - if exist %LIBRARY_INC%\\dirent.h exit 1                    # [win]
+    # Regression test for https://github.com/conda-forge/simbody-feedstock/issues/39.
+    # Check Simbody's own file list because the runtime dirent package provides
+    # the replacement header in the combined test environment.
+    - findstr /i /c:"Library/include/dirent.h" "%PREFIX%\\conda-meta\\simbody-{{ version }}-*.json" >nul && exit /b 1 || ver >nul  # [win]
+    - if exist %LIBRARY_BIN%\\glut32.dll exit 1                  # [win]
+    # Installed CMake metadata must not retain a conda-build prefix.
+    - if grep -R -E '(_h_env_|conda-bld)' $PREFIX/lib/cmake/simbody; then exit 1; fi  # [unix]
+    - findstr /s /m /c:"_h_env_" /c:"conda-bld" "%LIBRARY_PREFIX%\lib\cmake\simbody\*" >nul && exit /b 1 || ver >nul  # [win]
+    # Unix targets may export portable BLAS::BLAS/LAPACK::LAPACK names, but
+    # must not hard-code a provider or library path.
+    - if grep -E '(lib(open)?blas|liblapack|libblis|openblas)' $PREFIX/lib/cmake/simbody/SimbodyTargets.cmake; then exit 1; fi  # [unix]
+    - pkg-config --atleast-version=3.8 simbody
+    - findstr /c:"-lopenblas" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul || exit /b 1  # [win]
+    - findstr /c:"-lliblapack" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul && exit /b 1 || ver >nul  # [win]
+    - findstr /c:"-llibblas" "%LIBRARY_LIB%\pkgconfig\simbody.pc" >nul && exit /b 1 || ver >nul  # [win]
   files:
     - test
   requires:
-    - cmake >=3.8
+    - cmake >=3.21
     - make  # [unix]
     - ninja  # [win]
+    - pkg-config
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
 
 about:
     home: https://simtk.org/home/simbody
     license: Apache-2.0
-    license_file: LICENSE.txt
+    license_file:
+        # Retain the notices for third-party sources embedded in Simbody.
+        - LICENSE.txt
+        - SimTKcommon/Random/etc/LICENSE.txt
+        - SimTKmath/Integrators/src/CPodes/sundials/LICENSE.txt
+        - SimTKmath/Integrators/src/CPodes/sundials/src/cpodes/LICENSE.txt
+        - SimTKmath/Optimizers/src/IpOpt/LICENSE.txt
+        - SimTKmath/Optimizers/src/c-cmaes/LICENSE
+        - SimTKmath/Optimizers/src/c-cmaes/simmath_license_note.txt
+        # Includes the embedded TinyXML Zlib license notice.
+        - doc/debian/copyright
     dev_url: https://github.com/simbody/simbody
     doc_url: https://simbody.github.io
     summary: >
