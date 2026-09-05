@@ -1,0 +1,83 @@
+From 4a62d654fa034244c68ba0c85574fbce8d51519b Mon Sep 17 00:00:00 2001
+From: Maximilian Matthe <maxi.matthe@posteo.de>
+Date: Sat, 23 Aug 2025 00:41:06 +0200
+Subject: [PATCH] Fix Race Condition in simbody-visualizer (#838)
+
+Bring drawing menus and sliders into the scene lock.
+
+It can happen that during the rendering of the menus or the sliders a
+new command is for adding another menu is received. In this case, the
+`menus` vector can become reallocated, making the current object
+invalid.
+
+This commit puts the scene lock around rendering the menus and sliders,
+to ensure that either a menu is added or drawn.
+
+---------
+
+Co-authored-by: Maximilian <maximilian.matthe@barkhauseninstitut.org>
+---
+ .../simbody-visualizer/simbody-visualizer.cpp | 49 ++++++++++---------
+ 1 file changed, 27 insertions(+), 22 deletions(-)
+
+diff --git a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+index 12f6a1e4d..9a7bf3fb1 100644
+--- a/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
++++ b/Simbody/Visualizer/simbody-visualizer/simbody-visualizer.cpp
+@@ -1569,29 +1569,34 @@ static void redrawDisplay() {
+     std::vector<string> screenText;
+     renderScene(&screenText);
+ 
+-    // Draw menus.
+-    // ------------------------------------------------------------
+-    glDisable(GL_BLEND);
+-    glDepthMask(GL_TRUE);
+-    glMatrixMode(GL_PROJECTION);
+-    glPushMatrix();
+-    glLoadIdentity();
+-    gluOrtho2D(0, viewWidth, 0, viewHeight);
+-    glScalef(1, -1, 1);
+-    glTranslatef(0, GLfloat(-viewHeight), 0);
+-    glMatrixMode(GL_MODELVIEW);
+-    glLoadIdentity();
+-    glDisable(GL_LIGHTING);
+-    glDisable(GL_DEPTH_TEST);
+-    int menux = 10;
+-    for (int i = 0; i < (int) menus.size(); i++)
+-        menux += menus[i].draw(menux, viewHeight-10);
++    {
++        //------- LOCK SCENE --------
++        std::unique_lock<std::mutex> lock(sceneMutex);
++        // Draw menus.
++        // ------------------------------------------------------------
++        glDisable(GL_BLEND);
++        glDepthMask(GL_TRUE);
++        glMatrixMode(GL_PROJECTION);
++        glPushMatrix();
++        glLoadIdentity();
++        gluOrtho2D(0, viewWidth, 0, viewHeight);
++        glScalef(1, -1, 1);
++        glTranslatef(0, GLfloat(-viewHeight), 0);
++        glMatrixMode(GL_MODELVIEW);
++        glLoadIdentity();
++        glDisable(GL_LIGHTING);
++        glDisable(GL_DEPTH_TEST);
++        int menux = 10;
++        for (int i = 0; i < (int) menus.size(); i++) {
++            menux += menus[i].draw(menux, viewHeight-10);
++        }
+ 
+-    // Draw sliders.
+-    // ------------------------------------------------------------
+-    int slidery = viewHeight-35;
+-    for (int i = 0; i < (int) sliders.size(); i++)
+-        slidery = sliders[i].draw(slidery);
++        // Draw sliders.
++        // ------------------------------------------------------------
++        int slidery = viewHeight-35;
++        for (int i = 0; i < (int) sliders.size(); i++)
++            slidery = sliders[i].draw(slidery);
++    } // ------------- UNLOCK SCENE ------------------
+ 
+     // Draw the "heads-up" display.
+     // ------------------------------------------------------------

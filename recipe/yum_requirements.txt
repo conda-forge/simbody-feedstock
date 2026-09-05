@@ -1,0 +1,2 @@
+# Headless display for the installed visualizer regression test.
+xorg-x11-server-Xvfb
