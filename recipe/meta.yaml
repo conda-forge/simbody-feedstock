@@ -19,7 +19,7 @@ source:
       - 0004-skip-runtime-dll-copy-with-external-libs.patch
 
 build:
-    number: 0
+    number: 1
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
