@@ -7,4 +7,5 @@ cmake .. -LAH \
   -DCMAKE_BUILD_TYPE=Release
 make
 ./mysimbodyexe
+./cablespan_via_point
 

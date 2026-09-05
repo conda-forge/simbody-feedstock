@@ -17,9 +17,18 @@ source:
       - 0003-fix-pkg-config-metadata.patch
       # Conda supplies external Windows DLLs on PATH, so do not copy target DLLs.
       - 0004-skip-runtime-dll-copy-with-external-libs.patch
+      # Backport the realization support required by CableSpan via points.
+      # Remove after a release containing https://github.com/simbody/simbody/pull/832.
+      - 0006-backport-cablesubsystem-realization.patch
+      # OpenSim 4.6 uses the via-point API introduced by this upstream change.
+      # Remove after a release containing https://github.com/simbody/simbody/pull/828.
+      - 0007-backport-cablespan-via-points.patch
+      # OpenSim 4.6 also uses these CableSpan tangent-direction accessors.
+      # Remove after a release containing https://github.com/simbody/simbody/pull/857.
+      - 0008-backport-cablespan-tangent-directions.patch
 
 build:
-    number: 0
+    number: 1
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
