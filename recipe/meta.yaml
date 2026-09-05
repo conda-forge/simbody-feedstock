@@ -17,9 +17,11 @@ source:
       - 0003-fix-pkg-config-metadata.patch
       # Conda supplies external Windows DLLs on PATH, so do not copy target DLLs.
       - 0004-skip-runtime-dll-copy-with-external-libs.patch
+      # Remove after a release containing https://github.com/simbody/simbody/pull/838.
+      - 0005-fix-visualizer-menu-slider-race.patch
 
 build:
-    number: 0
+    number: 1
     run_exports:
         - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
