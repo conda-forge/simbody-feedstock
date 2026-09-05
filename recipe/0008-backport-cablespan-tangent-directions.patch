@@ -1,0 +1,205 @@
+diff --git a/Simbody/include/simbody/internal/CableSpan.h b/Simbody/include/simbody/internal/CableSpan.h
+index a0564a14f..9e9ec30db 100644
+--- a/Simbody/include/simbody/internal/CableSpan.h
++++ b/Simbody/include/simbody/internal/CableSpan.h
+@@ -297,9 +297,19 @@ class SimTK_SIMBODY_EXPORT CableSpan final {
+     /** @name End point computations */
+     ///@{
+ 
++    /** Calculate the cable span tangent direction at the origin. The direction
++    points along the path from the origin towards the termination.
++    State must be realized to Stage::Position.
++    @param state State of the system.
++    **/
++    UnitVec3 calcOriginTangentDirection(const State& state) const;
++
+     /** Calculate the unit force exerted by the cable at the cable origin (in
+-    ground frame). The force can be obtained by multiplying the result by the
+-    cable tension. State must be realized to Stage::Position.
++    ground frame). The force is applied tangent to the cable span pointing
++    towards the termination, i.e., the same direction as returned by
++    calcOriginTangentDirection(). The effect of a tensile force applied to the
++    cable can be obtained by multiplying the returned unit force by the cable
++    tension. State must be realized to Stage::Position.
+     @param state State of the system.
+     @param[out] unitForce_G The resulting unit spatial force in ground frame.
+     **/
+@@ -307,9 +317,19 @@ class SimTK_SIMBODY_EXPORT CableSpan final {
+         const State& state,
+         SpatialVec& unitForce_G) const;
+ 
++    /** Calculate the cable span tangent direction at the termination. The
++    direction points along the path from the origin towards the termination.
++    State must be realized to Stage::Position.
++    @param state State of the system.
++    **/
++    UnitVec3 calcTerminationTangentDirection(const State& state) const;
++
+     /** Calculate the unit force exerted by the cable at the cable termination
+-    (in ground frame). The force can be obtained by multiplying the result by
+-    the cable tension. State must be realized to Stage::Position.
++    (in ground frame). The force is applied tangent to the cable span pointing
++    towards the origin, i.e., the opposite of the direction returned by
++    calcTerminationTangentDirection(). The effect of a tensile force applied to
++    the cable can be obtained by multiplying the returned unit force by the
++    cable tension. State must be realized to Stage::Position.
+     @param state State of the system.
+     @param[out] unitForce_G The resulting unit spatial force in ground frame.
+     **/
+@@ -605,8 +625,9 @@ class SimTK_SIMBODY_EXPORT CableSpan final {
+         const std::function<void(Vec3 point_G)>& sink) const;
+ 
+     /** Calculate the unit force exerted by the cable at the specified obstacle
+-    (in ground frame). The force can be obtained by multiplying the result by
+-    the cable tension. State must be realized to Stage::Position.
++    (in ground frame). The effect of a tensile force applied to the cable can be
++    obtained by multiplying the returned unit force by the cable tension. State
++    must be realized to Stage::Position.
+     @param state State of the system.
+     @param ix The index of the obstacle in this CableSpan.
+     @param[out] unitForce_G The resulting unit spatial force in ground frame. **/
+@@ -630,8 +651,9 @@ class SimTK_SIMBODY_EXPORT CableSpan final {
+         CableSpanViaPointIndex ix) const;
+ 
+     /** Calculate the unit force exerted by the cable at the specified via point
+-    (in ground frame). The force can be obtained by multiplying the result by
+-    the cable tension. State must be realized to Stage::Position.
++    (in ground frame). The effect of a tensile force applied to the cable can be
++    obtained by multiplying the returned unit force by the cable tension. State
++    must be realized to Stage::Position.
+     @param state State of the system.
+     @param ix The index of the via point in this CableSpan.
+     @param[out] unitForce_G The resulting unit spatial force in ground frame. **/
+@@ -640,6 +662,25 @@ class SimTK_SIMBODY_EXPORT CableSpan final {
+         CableSpanViaPointIndex ix,
+         SpatialVec& unitForce_G) const;
+ 
++    /** Calculate the incoming tangent direction of the cable span at the
++    specified via point. The direction points along the path from the origin
++    towards the via point. State must be realized to Stage::Position.
++    @param state State of the system.
++    @param ix The index of the via point in this CableSpan. **/
++    UnitVec3 calcViaPointIncomingTangentDirection(
++        const State& state,
++        CableSpanViaPointIndex ix) const;
++
++    /** Calculate the outgoing tangent direction of the cable span at the
++    specified via point. The direction points along the path from the via point
++    towards the termination point. State must be
++    realized to Stage::Position.
++    @param state State of the system.
++    @param ix The index of the via point in this CableSpan. **/
++    UnitVec3 calcViaPointOutgoingTangentDirection(
++        const State& state,
++        CableSpanViaPointIndex ix) const;
++
+     ///@}
+ 
+     /** @cond **/ // Hide from Doxygen.
+diff --git a/Simbody/src/CableSpan.cpp b/Simbody/src/CableSpan.cpp
+index 442b5e307..cf51a7cfc 100644
+--- a/Simbody/src/CableSpan.cpp
++++ b/Simbody/src/CableSpan.cpp
+@@ -4566,6 +4566,13 @@ void CableSpan::calcOriginUnitForce(
+     calcUnitForceAtCableOrigin(getImpl(), state, unitForce_G);
+ }
+ 
++UnitVec3 CableSpan::calcOriginTangentDirection(const State& state) const
++{
++    getImpl().realizePosition(state);
++    const CableSpanData::Position& dataPos = getImpl().getDataPos(state);
++    return dataPos.originTangent_G;
++}
++
+ void CableSpan::calcTerminationUnitForce(
+     const State& state,
+     SpatialVec& unitForce_G) const
+@@ -4574,6 +4581,13 @@ void CableSpan::calcTerminationUnitForce(
+     calcUnitForceAtCableTermination(getImpl(), state, unitForce_G);
+ }
+ 
++UnitVec3 CableSpan::calcTerminationTangentDirection(const State& state) const
++{
++    getImpl().realizePosition(state);
++    const CableSpanData::Position& dataPos = getImpl().getDataPos(state);
++    return dataPos.terminationTangent_G;
++}
++
+ ObstacleIndex CableSpan::addObstacle(
+     MobilizedBodyIndex obstacleBody,
+     const Transform& X_BS,
+@@ -4846,3 +4860,25 @@ void CableSpan::calcViaPointUnitForce(
+     const auto& viaPoint = getImpl().getViaPoint(ix);
+     calcUnitForceExertedByViaPoint(viaPoint, state, unitForce_G);
+ }
++
++UnitVec3 CableSpan::calcViaPointIncomingTangentDirection(
++    const State& state,
++    CableSpanViaPointIndex ix) const
++{
++    SimTK_INDEXCHECK_ALWAYS(ix,getNumViaPoints(),
++        "CableSpan::calcViaPointIncomingTangentDirection()");
++    getImpl().realizePosition(state);
++    const CableSpanData::Position& dataPos = getImpl().getDataPos(state);
++    return dataPos.viaPointInTangents_G[ix];
++}
++
++UnitVec3 CableSpan::calcViaPointOutgoingTangentDirection(
++    const State& state,
++    CableSpanViaPointIndex ix) const
++{
++    SimTK_INDEXCHECK_ALWAYS(ix,getNumViaPoints(),
++        "CableSpan::calcViaPointOutgoingTangentDirection()");
++    getImpl().realizePosition(state);
++    const CableSpanData::Position& dataPos = getImpl().getDataPos(state);
++    return dataPos.viaPointOutTangents_G[ix];
++}
+diff --git a/Simbody/tests/TestCableSpan.cpp b/Simbody/tests/TestCableSpan.cpp
+index fb9194c3b..92318e622 100644
+--- a/Simbody/tests/TestCableSpan.cpp
++++ b/Simbody/tests/TestCableSpan.cpp
+@@ -545,6 +545,44 @@ void testViaPoints()
+             "Unexpected force applied to body %i",
+             i);
+     }
++
++    // Check tangent directions.
++    // Origin.
++    UnitVec3 originTangent = cable.calcOriginTangentDirection(s);
++    SimTK_TEST_EQ(originTangent, UnitVec3(0., 1., 0.));
++
++    // First via point.
++    CableSpanViaPointIndex viaPoint1Index(0);
++    UnitVec3 viaPoint1InTangent =
++        cable.calcViaPointIncomingTangentDirection(s, viaPoint1Index);
++    SimTK_TEST_EQ(viaPoint1InTangent, UnitVec3(0., 1., 0.));
++    UnitVec3 viaPoint1OutTangent =
++        cable.calcViaPointOutgoingTangentDirection(s, viaPoint1Index);
++    SimTK_TEST_EQ(viaPoint1OutTangent, UnitVec3(0., 0., 1.));
++
++    // Second via point.
++    CableSpanViaPointIndex viaPoint2Index(1);
++    UnitVec3 viaPoint2InTangent =
++        cable.calcViaPointIncomingTangentDirection(s, viaPoint2Index);
++    SimTK_TEST_EQ(viaPoint2InTangent, UnitVec3(0., 0., 1.));
++    UnitVec3 viaPoint2OutTangent =
++        cable.calcViaPointOutgoingTangentDirection(s, viaPoint2Index);
++    SimTK_TEST_EQ(viaPoint2OutTangent, UnitVec3(-1., 0., 0.));
++
++    // Third via point.
++    CableSpanViaPointIndex viaPoint3Index(2);
++    UnitVec3 viaPoint3InTangent =
++        cable.calcViaPointIncomingTangentDirection(s, viaPoint3Index);
++    SimTK_TEST_EQ(viaPoint3InTangent, UnitVec3(-1., 0., 0.));
++    UnitVec3 viaPoint3OutTangent =
++        cable.calcViaPointOutgoingTangentDirection(s, viaPoint3Index);
++    SimTK_TEST_EQ(viaPoint3OutTangent,
++                  UnitVec3(0., -1./std::sqrt(5.), -2./std::sqrt(5.)));
++
++    // Termination.
++    UnitVec3 terminationTangent = cable.calcTerminationTangentDirection(s);
++    SimTK_TEST_EQ(terminationTangent,
++                  UnitVec3(0., -1./std::sqrt(5.), -2./std::sqrt(5.)));
+ }
+ 
+ /** Test computed cable path over all supported surfaces and a via point,
