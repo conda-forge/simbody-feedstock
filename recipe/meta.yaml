@@ -1,35 +1,35 @@
-{% set version = "3.8" %}
+{% set version = "3.9" %}
 
 package:
-    name: simbody
-    version: "{{ version }}"
+  name: simbody
+  version: "{{ version }}"
 
 source:
-    fn: Simbody-{{ version }}.tar.gz
-    url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
-    sha256: ea71b0206f54a6b4d1714a20e145ba3f39a8298aed1718742b18b6d5ea0261dd
-    patches:
+  fn: Simbody-{{ version }}.tar.gz
+  url: https://github.com/simbody/simbody/archive/Simbody-{{ version }}.tar.gz
+  sha256: 5fd6fd811e4654556849c554150ebdcbdc4b2dcc166733253653700ce0fbc032
+  patches:
       # Use conda-forge's freeglut instead of the bundled Windows binaries.
-      - 0001-use-system-freeglut-on-windows.patch
+    - 0001-use-system-freeglut-on-windows.patch
       # Use conda-forge's lodepng instead of the bundled 2010 snapshot.
-      - 0002-use-system-lodepng.patch
+    - 0002-use-system-lodepng.patch
       # Fix the installed pkg-config version and Windows BLAS link flags.
-      - 0003-fix-pkg-config-metadata.patch
+    - 0003-fix-pkg-config-metadata.patch
       # Conda supplies external Windows DLLs on PATH, so do not copy target DLLs.
-      - 0004-skip-runtime-dll-copy-with-external-libs.patch
+    - 0004-skip-runtime-dll-copy-with-external-libs.patch
 
 build:
-    number: 1
-    run_exports:
-        - {{ pin_subpackage('simbody', max_pin='x.x') }}
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('simbody', max_pin='x.x') }}
     # Xmu and Xi are needed only for CMake's Linux GLUT feature check;
     # Simbody does not link against them directly.
-    ignore_run_exports:
-        - xorg-libxmu  # [linux]
-        - xorg-libxi  # [linux]
+  ignore_run_exports:
+    - xorg-libxmu      # [linux]
+    - xorg-libxi      # [linux]
     # NOTE : This is needed to ensure the paths to Simbody's binaries, like
     # simbody-visualizer, are corrected.
-    detect_binary_files_with_prefix: true
+  detect_binary_files_with_prefix: true
 
 # NOTE: This installs Simbody and the optional visualizer on Linux, Windows,
 # and OSX. On Windows, we build against the openblas available in conda-forge,
@@ -38,29 +38,29 @@ build:
 # macOS provides a GLUT framework.
 # https://github.com/AnacondaRecipes/r-rgl-feedstock/blob/master/recipe/meta.yaml#L48-L67
 requirements:
-    build:
-        - cmake >=3.21
-        - ninja  # [win]
-        - make  # [unix]
-        - doxygen
-        - {{ compiler('c') }}
-        - {{ stdlib('c') }}
-        - {{ compiler('cxx') }}
-    host:
-        - openblas  # [win]
-        - libblas  # [not win]
-        - liblapack  # [not win]
-        - libgl-devel  # [linux]
-        - libglu  # [linux]
-        - freeglut  # [not osx]
-        - xorg-libxmu  # [linux]
-        - xorg-libxi  # [linux]
-        - lodepng
-    run:
-        - openblas  # [win]
+  build:
+    - cmake >=3.21
+    - ninja      # [win]
+    - make      # [unix]
+    - doxygen
+    - {{ compiler('c') }}
+    - {{ stdlib('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - openblas      # [win]
+    - libblas      # [not win]
+    - liblapack      # [not win]
+    - libgl-devel      # [linux]
+    - libglu      # [linux]
+    - freeglut      # [not osx]
+    - xorg-libxmu      # [linux]
+    - xorg-libxi      # [linux]
+    - lodepng
+  run:
+    - openblas      # [win]
         # Keep downstreams compatible after removing Simbody's vendored dirent.h.
         # See https://github.com/conda-forge/simbody-feedstock/issues/39.
-        - dirent  # [win]
+    - dirent      # [win]
 test:
   commands:
     - test -f $PREFIX/libexec/simbody/simbody-visualizer              # [linux]
@@ -113,27 +113,25 @@ test:
     - {{ compiler('cxx') }}
 
 about:
-    home: https://simtk.org/home/simbody
-    license: Apache-2.0
-    license_file:
+  home: https://simtk.org/home/simbody
+  license: Apache-2.0
+  license_file:
         # Retain the notices for third-party sources embedded in Simbody.
-        - LICENSE.txt
-        - SimTKcommon/Random/etc/LICENSE.txt
-        - SimTKmath/Integrators/src/CPodes/sundials/LICENSE.txt
-        - SimTKmath/Integrators/src/CPodes/sundials/src/cpodes/LICENSE.txt
-        - SimTKmath/Optimizers/src/IpOpt/LICENSE.txt
-        - SimTKmath/Optimizers/src/c-cmaes/LICENSE
-        - SimTKmath/Optimizers/src/c-cmaes/simmath_license_note.txt
+    - LICENSE.txt
+    - SimTKcommon/Random/etc/LICENSE.txt
+    - SimTKmath/Integrators/src/CPodes/sundials/LICENSE.txt
+    - SimTKmath/Integrators/src/CPodes/sundials/src/cpodes/LICENSE.txt
+    - SimTKmath/Optimizers/src/IpOpt/LICENSE.txt
+    - SimTKmath/Optimizers/src/c-cmaes/LICENSE
+    - SimTKmath/Optimizers/src/c-cmaes/simmath_license_note.txt
         # Includes the embedded TinyXML Zlib license notice.
-        - doc/debian/copyright
-    dev_url: https://github.com/simbody/simbody
-    doc_url: https://simbody.github.io
-    summary: >
-        High-performance C++ multibody dynamics/physics library for simulating
-        articulated biomechanical and mechanical systems like vehicles, robots,
-        and the human skeleton.
+    - doc/debian/copyright
+  dev_url: https://github.com/simbody/simbody
+  doc_url: https://simbody.github.io
+  summary: >
+    High-performance C++ multibody dynamics/physics library for simulating articulated biomechanical and mechanical systems like vehicles, robots, and the human skeleton.
 
 extra:
-    recipe-maintainers:
-        - moorepants
-        - chrisdembia
+  recipe-maintainers:
+    - moorepants
+    - chrisdembia
