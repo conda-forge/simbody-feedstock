@@ -26,18 +26,5 @@ index bd0dcaa..81e8d86 100644
      set(PKGCONFIG_PLATFORM_LIBS "-lliblapack -llibblas")
  elseif(APPLE)
      set(PKGCONFIG_PLATFORM_LIBS     "-llapack -lblas -ldl")
-diff --git a/cmake/pkgconfig/simbody.pc.in b/cmake/pkgconfig/simbody.pc.in
-index c9d8506..db92b70 100644
---- a/cmake/pkgconfig/simbody.pc.in
-+++ b/cmake/pkgconfig/simbody.pc.in
-@@ -4,7 +4,7 @@ includedir=${prefix}/@SIMBODY_INCLUDE_INSTALL_DIR@
- 
- Name: simbody
- Description: Simbody Libraries
--Version: @SIMBODY_VERSION@
-+Version: @Simbody_VERSION@
- Requires:
- Libs: -L${libdir} -lSimTKsimbody -lSimTKmath -lSimTKcommon @PKGCONFIG_PLATFORM_LIBS@
- CFlags: -I${includedir} -std=c++11
 -- 
 2.51.0
